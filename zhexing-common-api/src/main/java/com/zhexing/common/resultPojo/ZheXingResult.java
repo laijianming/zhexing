@@ -1,13 +1,11 @@
-package com.zhexing.sociality.pojo;
+package com.zhexing.common.resultPojo;
 
 import java.util.List;
 
-import org.springframework.context.annotation.Bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
  * 者行系统自定义响应结构

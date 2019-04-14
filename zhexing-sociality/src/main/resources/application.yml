@@ -1,6 +1,6 @@
 # \u7AEF\u53E3
 server:
-  port: 4182
+  port: 80
 spring:
   datasource:
     password: zhexing
@@ -24,6 +24,17 @@ spring:
     useGlobalDataSourceStat: true
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
     username: root
+  redis:
+#    host: 129.204.212.52
+    port: 6379
+    host: 192.168.2.123
+
+#开启驼峰命名
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
 #    schema:
 #      - classpath:department.sql
+
+
 
