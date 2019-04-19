@@ -27,8 +27,10 @@ public interface TagService {
     Tag searchTag(String tname);
 
 
-
     /**
-     *  热搜话题查找
+     * 热搜话题查找
+     * @return
      */
+    ZheXingResult hotTags();
+
 }

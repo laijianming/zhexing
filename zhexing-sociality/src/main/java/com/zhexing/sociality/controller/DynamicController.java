@@ -25,8 +25,10 @@ public class DynamicController {
      */
     @PostMapping("/dynamic/publish")
     public ZheXingResult publishDynamic(Dynamic dynamic){
-
-        return ZheXingResult.ok(dynamicService.publishDynamic(dynamic));
+        System.out.println("dynamic == " + dynamic);
+        if(dynamic == null)
+            return ZheXingResult.ok();
+        return dynamicService.publishDynamic(dynamic);
     }
 
 
@@ -36,13 +38,20 @@ public class DynamicController {
      * @return
      */
     @GetMapping("/dynamic/delete")
-    public ZheXingResult deleteDynamic(Long dynamicId){
-        return dynamicService.deleteDynamid(dynamicId);
+    public ZheXingResult deleteDynamic(Long dynamicId,String tnames){
+        return dynamicService.deleteDynamid(dynamicId,tnames);
     }
 
+    /**
+     * 获取热点话题下的动态
+     * @param tname
+     * @param start
+     * @param nums
+     * @return
+     */
     @GetMapping("/dynamic/hotDynamic")
-    public ZheXingResult searchHotDynamic(){
-        return dynamicService.hotDynamic();
+    public ZheXingResult searchHotDynamic(String tname,int start,int nums){
+        return dynamicService.hotDynamic(tname,start,nums);
     }
 
 

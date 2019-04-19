@@ -31,6 +31,19 @@ public interface DynamicDao {
     Long publishDynamic(@Param(value = "dynamic") Dynamic dynamic);
 
 
+    /**
+     * 根据 dynamicId 来查找动态详细信息
+     * @param dynamicId
+     * @return
+     */
+    @Select("SELECT dynamic_id,user_id,publish_time,content,tnames,images,forward_did FROM tb_dynamic WHERE dynamic_id = #{dynamicId}")
+    Dynamic selectById(Long dynamicId);
+
+    /**
+     * 根据 dynamicId 来删除数据库中的对应的动态
+     * @param dynamicId
+     * @return
+     */
     @Delete("DELETE FROM tb_dynamic WHERE dynamic_id = #{dynamicId}")
     Integer deleteDynamic(Long dynamicId);
 

@@ -21,4 +21,7 @@ public class Tag implements Serializable {
     private Integer tstatus;
 
     private Date createTime;
+
+    // 该话题下有多少条动态
+    private Long dynamics;
 }

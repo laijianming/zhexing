@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -32,6 +33,16 @@ public class RedisDao {
         return true;
     }
 
+    /**
+     * String结构获取换缓存值
+     * @param K
+     * @return
+     */
+    public String get(String K){
+        String result = redisTemplate.opsForValue().get(K) + "";
+        return result;
+    }
+
 
     /**
      * hash结构添加缓存
@@ -54,10 +65,28 @@ public class RedisDao {
      * @param V
      * @return
      */
-    public boolean putList(String K,Long millisecond,String ... V){
+    public boolean putList(String K,Long millisecond,String V){
         redisTemplate.opsForList().rightPush(K,V);
         expire(K,millisecond);
         return true;
+    }
+    public boolean putAllList(String K,Long millisecond,String[] V){
+        redisTemplate.opsForList().rightPushAll(K,V);
+        expire(K,millisecond);
+        return true;
+    }
+
+    /**
+     * List结构取出值
+     * @param K
+     * @param start
+     * @param end
+     * @return
+     */
+    public List lrange(String K,long start,long end){
+        List range = redisTemplate.opsForList().range(K, start, end);
+        return range;
+
     }
 
     /**
@@ -97,7 +126,7 @@ public class RedisDao {
      * @return
      */
     public Set zrevrange(String K, int Start, int end, boolean withscores){
-
+        // withscores true 返回 v 和 score ； false 不返回 score
         return  withscores?redisTemplate.opsForZSet().reverseRangeWithScores(K,Start,end)
                 :redisTemplate.opsForZSet().reverseRange(K, Start, end);
     }
@@ -136,6 +165,37 @@ public class RedisDao {
     }
 
 
+    /**
+     * 获取Zset结构下K的条数
+     * @param K
+     * @return
+     */
+    public Long zcard(String K){
+        return redisTemplate.opsForZSet().zCard(K);
+    }
+
+
+    /**
+     * 添加Set结构缓存
+     * @param K
+     * @param V
+     * @return
+     */
+    public Long sadd(String K,String V){
+        Long add = redisTemplate.opsForSet().add(K, V);
+        return add;
+    }
+
+    public boolean sadd(String K,String ... V){
+        redisTemplate.opsForSet().add(K,V);
+        return true;
+    }
+
+    public Long srem(String K,String V){
+        return redisTemplate.opsForSet().remove(K,V);
+    }
+
+
 
     /**
      * 设置有效时间
@@ -143,10 +203,11 @@ public class RedisDao {
      * @param millisecond
      */
     public void expire(String K,Long millisecond){
-        if(millisecond != 0){
+        if(millisecond != null && millisecond != 0){
             redisTemplate.expire(K,millisecond,TimeUnit.MILLISECONDS);
         }
     }
+
 
     /**
      * 给缓存的有效期增加或修改 millisecond 毫秒

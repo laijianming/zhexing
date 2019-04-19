@@ -22,4 +22,14 @@ public class Dynamic implements Serializable {
 
     private Long forwardDid;
 
+    // 是否点赞 1：点赞 0：没点赞
+    private Long isLike;
+
+    // 评论数
+    private Long comments;
+
+    // 转发数
+    private Long follows;
+
+
 }

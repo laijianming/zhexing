@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ZheXingResult handleException(Exception e, HttpServletRequest request){
-        System.out.println("00000==================00000");
+        System.out.println("GlobalExceptionHandler 启动 出现异常 封装新返回结果并响应");
         Map<String,Object> map = new HashMap<>();
         //传入我们自己的错误状态码 4xx 5xx，否则就不会进入定制错误页面的解析流程
         /**
