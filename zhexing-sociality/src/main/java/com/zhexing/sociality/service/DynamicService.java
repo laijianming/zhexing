@@ -35,9 +35,11 @@ public interface DynamicService {
      */
     ZheXingResult hotDynamic(String tname,int start,int nums);
 
+
     /**
      *  推荐动态查找
      */
+    ZheXingResult recommend(Long start,Long end);
 
 
     /**
@@ -50,27 +52,24 @@ public interface DynamicService {
      *  查看某人发的动态
      */
 
-    /**
-     * 动态点赞
-     * @param userId
-     * @param dynamicId
-     * @return
-     */
-    ZheXingResult likeDynamic(Long userId,Long dynamicId,String tnames);
 
     /**
-     * 取消点赞
+     * 动态点赞处理
      * @param userId
      * @param dynamicId
      * @param tnames
+     * @param flag 1 表示 点赞； 0（其他）表示取消点赞 -1
      * @return
      */
-    ZheXingResult cancelLike(Long userId,Long dynamicId,String tnames);
+    ZheXingResult likeDynamic(Long userId,Long dynamicId,String tnames,int flag);
+
 
 
     /**
      *  动态转发（分享）
      */
+
+
 
     /**
      *  动态收藏

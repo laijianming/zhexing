@@ -1,11 +1,23 @@
 package com.zhexing.sociality.service.impl;
 
 import com.zhexing.common.resultPojo.ZheXingResult;
+import com.zhexing.sociality.dao.CommentDao;
+import com.zhexing.sociality.dao.RedisDao;
+import com.zhexing.sociality.enums.SocialEnum;
 import com.zhexing.sociality.pojo.Comment;
 import com.zhexing.sociality.service.CommentService;
+import com.zhexing.sociality.utils.JsonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 public class CommentServiceImpl implements CommentService {
 
+    @Autowired
+    CommentDao commentDao;
+
+    @Autowired
+    RedisDao redisDao;
 
     /**
      * 动态评论
@@ -13,16 +25,105 @@ public class CommentServiceImpl implements CommentService {
      * @return
      */
     @Override
-    public ZheXingResult dynamicComment(Comment comment) {
+    public ZheXingResult dynamicComment(Comment comment,String tname) {
 
         // 1、将评论插入到数据库中
+        comment.setCommentTime(new Date());
+        Long aLong = commentDao.publishComment(comment);
 
-        // 2、将评论添加到对应的缓存上
+        // 2、将评论添加到对应的缓存上 和 动态热评上
+        if(aLong >= 1){
+            // 将评论添加到对应的缓存
+            redisDao.hput(SocialEnum.DYNAMIC_COMMENT_ + "" + comment.getDynamicId(),comment.getCommentId() + "",JsonUtils.objectToJson(comment),0L);
+            // 将评论添加到对应的动态热评上
+            redisDao.zadd(SocialEnum.DYNAMIC_HOT_COMMENT_ + "" + comment.getDynamicId(),comment.getCommentId() + "",1.0);
+
+            // 3、给对应动态 和 动态话题下增加1的热度
+            if(tname != null && !tname.equals("")){
+                String[] tnames = tname.split(" ");
+                for(int i = 0; i < tnames.length; i ++){
+                    // 将话题的热度计数 增加1
+                    redisDao.zincrby(SocialEnum.HOT_TAG_COUNT_ + "",tnames[i],1);
+                    // 给话题下动态排行查询次数 +1
+                    redisDao.zincrby(SocialEnum.TAG_DYNAMIC_ + tnames[i],comment.getDynamicId()+"",1);
+                }
+            }
+            // 4、给该动态缓存增加5分钟过期时间
+            redisDao.updateExpire(SocialEnum.DYNAMIC_ + "" + comment.getDynamicId(), 5 * 60 * 1000L);
+        }
 
 
 
 
-        return null;
+        return ZheXingResult.ok(comment);
+    }
+
+    /**
+     * 动态评论删除
+     * @param commentId
+     * @param dynamicId
+     * @return
+     */
+    @Override
+    public ZheXingResult deleteComment(Long commentId, Long dynamicId,String tname) {
+
+        // 1、删除数据库中的记录
+        Long aLong = commentDao.deleteComment(commentId);
+
+        if (aLong >= 1){
+            // 2、删除缓存中的相应记录
+            redisDao.hdel(SocialEnum.DYNAMIC_COMMENT_ + "" + dynamicId,commentId + "");
+            redisDao.zdel(SocialEnum.DYNAMIC_HOT_COMMENT_ + "" + dynamicId,commentId + "");
+            // 3、给对应的动态 和 动态话题热度 -1
+            if(tname != null && !tname.equals("")){
+                String[] tnames = tname.split(" ");
+                for(int i = 0; i < tnames.length; i ++){
+                    // 将话题的热度计数 -1
+                    redisDao.zincrby(SocialEnum.HOT_TAG_COUNT_ + "",tnames[i],-1);
+                    // 给话题下动态排行查询次数 -1
+                    redisDao.zincrby(SocialEnum.TAG_DYNAMIC_ + tnames[i],commentId+"",-1);
+                }
+            }
+        }
+
+        return ZheXingResult.ok();
+    }
+
+    /**
+     * 评论点赞处理
+     * @param commentId
+     * @param userId
+     * @param tname
+     * @param flag 1 表示 点赞； 0（其他）表示取消点赞 -1
+     * @return
+     */
+    @Override
+    public ZheXingResult likeComment(Long commentId, Long userId, String tname,int flag) {
+        double count;
+        Long sadd;
+        if(flag == 1){
+            // 1、添加点赞到缓存 ，， 之后会有定时任务持久化点赞记录
+            sadd = redisDao.sadd(SocialEnum.LIKE_DYNAMIC_ + "" + commentId, userId + "");
+            count = 1;
+        }else {
+            // 1、取消点赞，删除对应缓存
+            sadd = redisDao.srem(SocialEnum.LIKE_DYNAMIC_ + "" + commentId, userId + "");
+            count = -1;
+        }
+
+        // 2、给对应的动态 和 动态话题热度 + count 值
+        if(sadd != 0)
+            if(tname != null && !tname.equals("")){
+                String[] tnames = tname.split(" ");
+                for(int i = 0; i < tnames.length; i ++){
+                    // 将话题的热度计数 增加1
+                    redisDao.zincrby(SocialEnum.HOT_TAG_COUNT_ + "",tnames[i],count);
+                    // 给话题下动态排行查询次数 +1
+                    redisDao.zincrby(SocialEnum.TAG_DYNAMIC_ + tnames[i],commentId+"",count);
+                }
+            }
+
+        return ZheXingResult.ok();
     }
 
 }

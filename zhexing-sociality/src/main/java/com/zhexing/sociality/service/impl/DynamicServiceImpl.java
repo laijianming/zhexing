@@ -152,45 +152,52 @@ public class DynamicServiceImpl implements DynamicService {
     }
 
     /**
-     * 动态点赞
-     * @param userId
-     * @param dynamicId
+     * 推荐动态查找
      * @return
      */
     @Override
-    public ZheXingResult likeDynamic(Long userId, Long dynamicId,String tnames) {
-        // 添加点赞缓存，另有定时任务会去持久化
-        Long sadd = redisDao.sadd(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId, userId + "");
-        // 给该话题下动态热度排行计数 +1
+    public ZheXingResult recommend() {
+//        redisDao.
+
+        return null;
+    }
+
+    /**
+     * 动态点赞处理
+     * @param userId
+     * @param dynamicId
+     * @param tnames
+     * @param flag 1 表示 点赞； 0（其他）表示取消点赞
+     * @return
+     */
+    @Override
+    public ZheXingResult likeDynamic(Long userId, Long dynamicId,String tnames,int flag) {
+        Long sadd;
+        double count;
+        if(flag == 1){
+            // 添加点赞缓存，另有定时任务会去持久化
+            sadd = redisDao.sadd(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId, userId + "");
+            // 加入持久化队列
+            redisDao.sadd(SocialEnum.DURABLE_DYNAMIC_ + "",dynamicId + "");
+            count = 1;
+        }else {
+            // 取消点赞，删除对应缓存
+            sadd = redisDao.srem(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId, userId + "");
+            count = -1;
+        }
+        // 给该话题下动态热度排行计数 + count 值 和 话题排行计数 + count/5 值
         if (sadd != 0){
-            String[] split = tnames.split(" ");
-            for(int i = 0; i < split.length; i ++){
-                redisDao.zincrby(SocialEnum.TAG_DYNAMIC_ + split[i],dynamicId + "",1);
+            if(tnames != null && !tnames.equals("")) {
+                String[] split = tnames.split(" ");
+                for (int i = 0; i < split.length; i++) {
+                    redisDao.zincrby(SocialEnum.TAG_DYNAMIC_ + split[i], dynamicId + "", count);
+                    redisDao.zincrby(SocialEnum.HOT_TAG_COUNT_ + "",split[i],count/5);
+                }
             }
         }
         return ZheXingResult.ok(sadd);
     }
 
-    /**
-     * 取消点赞
-     * @param userId
-     * @param dynamicId
-     * @param tnames
-     * @return
-     */
-    @Override
-    public ZheXingResult cancelLike(Long userId, Long dynamicId, String tnames) {
-        // 删除点赞缓存
-        Long sadd = redisDao.srem(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId, userId + "");
-        // 给该话题下动态热度排行计数 -1
-        if (sadd != 0){
-            String[] split = tnames.split(" ");
-            for(int i = 0; i < split.length; i ++){
-                redisDao.zincrby(SocialEnum.TAG_DYNAMIC_ + split[i],dynamicId + "",-1);
-            }
-        }
-        return ZheXingResult.ok(sadd);
-    }
 
 
 }

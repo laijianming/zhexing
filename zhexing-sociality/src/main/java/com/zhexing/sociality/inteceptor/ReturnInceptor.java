@@ -11,9 +11,13 @@ public class ReturnInceptor implements HandlerInterceptor{
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
-		System.out.println("\nReturnInceptor preHandle ===> deal with url == " + request.getRequestURL());
-		response.setHeader("Access-Control-Allow-Origin",  "*");
-		response.setContentType("application/json;charset=UTF-8");
+		System.out.println("\n ReturnInceptor preHandle start ===> \n  来自 "  + request.getRemoteAddr() + " 的请求 \n deal with url == " + request.getRequestURL());
+//		response.setHeader("Access-Control-Allow-Origin",  "*");
+//		response.setContentType("application/json;charset=UTF-8");
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+		response.addHeader("Access-Control-Allow-Headers",
+				"Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,token");
 		
 		
 		return true;
@@ -32,7 +36,7 @@ public class ReturnInceptor implements HandlerInterceptor{
 			HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println(request.getRequestURL() + " --> url 请求已完成响应\n");
+		System.out.println(request.getRequestURL() + " --> url 请求已完成响应\n ReturnInceptor preHandle end ===>\n");
 	}
 
 }

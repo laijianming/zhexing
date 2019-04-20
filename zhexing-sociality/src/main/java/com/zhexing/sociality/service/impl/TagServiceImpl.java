@@ -59,7 +59,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public Tag searchTag(String tname) {
         // 1、在缓存中查该话题是否存在，存在则增加2分钟有效期并返回
-
+//        redisDao.s
         // 2、若缓存中没有该话题，则查数据库，若数据库存在，则添加缓存并设置30分钟有效期
 
         // 3、否则让调用方封装好数据再进行创建，返回null

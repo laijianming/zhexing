@@ -51,11 +51,23 @@ public class RedisDao {
      * @param millisecond
      * @return
      */
-    public boolean put(String H,String K,String V,Long millisecond){
+    public boolean hput(String H,String K,String V,Long millisecond){
         redisTemplate.opsForHash().put(H,K,V);
         expire(K,millisecond);
         return true;
     }
+
+
+    /**
+     * hash结构删除缓存
+     * @param H
+     * @param K
+     * @return
+     */
+    public Long hdel(String H,String K){
+        return redisTemplate.opsForHash().delete(H,K);
+    }
+
 
     /**
      * List结构添加缓存
@@ -190,10 +202,25 @@ public class RedisDao {
         return true;
     }
 
+    /**
+     * 删除Set结构缓存
+     * @param K
+     * @param V
+     * @return
+     */
     public Long srem(String K,String V){
         return redisTemplate.opsForSet().remove(K,V);
     }
 
+
+    /**
+     * 获取Set结构缓存值
+     * @param K
+     * @return
+     */
+    public Set smembers(String K){
+        return redisTemplate.opsForSet().members(K);
+    }
 
 
     /**
@@ -209,7 +236,7 @@ public class RedisDao {
 
 
     /**
-     * 给缓存的有效期增加或修改 millisecond 毫秒
+     * 给缓存的有效期增加或减少 millisecond 毫秒
      * @param K
      * @param millisecond
      */

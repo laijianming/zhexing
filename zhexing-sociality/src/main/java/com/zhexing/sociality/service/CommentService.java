@@ -12,15 +12,25 @@ public interface CommentService {
     /**
      *  动态评论
      */
-    ZheXingResult dynamicComment(Comment comment);
+    ZheXingResult dynamicComment(Comment comment,String tname);
 
-    /**
-     *  评论点赞
-     */
 
     /**
      *  动态评论删除
      */
+    ZheXingResult deleteComment(Long commentId,Long dynamicId,String tname);
+
+    /**
+     * 评论点赞
+     * @param commentId
+     * @param userId
+     * @param tname
+     * @param flag 1 表示 点赞； 0（其他）表示 -1
+     * @return
+     */
+    ZheXingResult likeComment(Long commentId,Long userId,String tname,int flag);
+
+
 
     /**
      *  查找前几条的热评
@@ -39,7 +49,7 @@ public interface CommentService {
      */
 
     /**
-     *  评论评论点赞
+     *  评论评论点赞处理
      */
 
     /**
