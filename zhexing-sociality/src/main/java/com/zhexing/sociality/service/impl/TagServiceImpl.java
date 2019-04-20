@@ -4,6 +4,7 @@ import com.zhexing.common.resultPojo.ZheXingResult;
 import com.zhexing.sociality.dao.RedisDao;
 import com.zhexing.sociality.dao.TagDao;
 import com.zhexing.sociality.enums.SocialEnum;
+import com.zhexing.sociality.pojo.HotTag;
 import com.zhexing.sociality.pojo.Tag;
 import com.zhexing.sociality.service.TagService;
 import com.zhexing.sociality.utils.JsonUtils;
@@ -75,11 +76,11 @@ public class TagServiceImpl implements TagService {
         // 1、查找话题排行中的前10条数据
         List lrange = redisDao.lrange(SocialEnum.HOT_TAG_ + "", 0, 10);
         // 2、查出每个话题下有多少条动态
-        Tag[] tags = new Tag[lrange.size()];
+        HotTag[] tags = new HotTag[lrange.size()];
         for(int i = 0; i < lrange.size(); i ++){
             String tname = lrange.get(i) + "";
             Long zcard = redisDao.zcard(SocialEnum.TAG_DYNAMIC_ + tname);
-            tags[i] = new Tag();
+            tags[i] = new HotTag();
             tags[i].setTname(tname);
             tags[i].setDynamics(zcard);
         }
