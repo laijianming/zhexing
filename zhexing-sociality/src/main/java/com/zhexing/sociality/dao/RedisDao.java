@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -68,6 +69,26 @@ public class RedisDao {
         return redisTemplate.opsForHash().delete(H,K);
     }
 
+    /**
+     * hash结构获取缓存值
+     * @param H
+     * @param K
+     * @return
+     */
+    public Object hget(String H,String K){
+        return redisTemplate.opsForHash().get(H,K);
+    }
+
+    /**
+     * 获取一个K集合的值
+     * @param H
+     * @param collection
+     * @return
+     */
+    public List hmultiGet(String H, Collection collection){
+        return redisTemplate.opsForHash().multiGet(H,collection);
+    }
+
 
     /**
      * List结构添加缓存
@@ -85,6 +106,10 @@ public class RedisDao {
         redisTemplate.opsForList().rightPushAll(K,V);
         expire(K,millisecond);
         return true;
+    }
+
+    public Long lpush(String K,String V){
+        return redisTemplate.opsForList().leftPush(K,V);
     }
 
     /**

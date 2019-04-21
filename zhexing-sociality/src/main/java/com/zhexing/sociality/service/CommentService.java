@@ -25,7 +25,7 @@ public interface CommentService {
      * @param commentId
      * @param userId
      * @param tname
-     * @param flag 1 表示 点赞； 0（其他）表示 -1
+     * @param flag 1 表示 点赞； 0（其他）表示 取消点赞
      * @return
      */
     ZheXingResult likeComment(Long commentId,Long userId,String tname,int flag);
@@ -35,6 +35,7 @@ public interface CommentService {
     /**
      *  查找前几条的热评
      */
+    ZheXingResult searchHotComment(Long dynamicId,int start,int n);
 
     /**
      *  查找该动态的全部评论

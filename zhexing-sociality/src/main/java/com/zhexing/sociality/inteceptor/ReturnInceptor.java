@@ -14,10 +14,11 @@ public class ReturnInceptor implements HandlerInterceptor{
 		System.out.println("\n ReturnInceptor preHandle start ===> \n  来自 "  + request.getRemoteAddr() + " 的请求 \n deal with url == " + request.getRequestURL());
 //		response.setHeader("Access-Control-Allow-Origin",  "*");
 //		response.setContentType("application/json;charset=UTF-8");
-		response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Origin", "http://192.168.2.108:8080");
 		response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 		response.addHeader("Access-Control-Allow-Headers",
 				"Content-Type,X-Requested-With,accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers,token");
+		response.setHeader("Access-Control-Allow-Credentials","true");
 		
 		
 		return true;

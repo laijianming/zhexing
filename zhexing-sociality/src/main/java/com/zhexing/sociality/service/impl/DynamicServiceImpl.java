@@ -64,7 +64,10 @@ public class DynamicServiceImpl implements DynamicService {
         dynamic.setPublishTime(new Date());
         Long aLong = dynamicDao.publishDynamic(dynamic);
 
-        // 3、将动态存到redis缓存（设置30分钟有效期），并将动态返回给前端页面
+        // 3、将动态id记录进缓存中 一周后过期
+        redisDao.lpush(SocialEnum.DYNAMIC_ + "",dynamic.getDynamicId() + "");
+
+        // 4、将动态存到redis缓存（设置30分钟有效期），并将动态返回给前端页面
         if(aLong >= 1) { // 插入数据库成功后将其添加到缓存
             addDynamicCache(dynamic);
             // 添加 话题下动态排行缓存
@@ -138,12 +141,16 @@ public class DynamicServiceImpl implements DynamicService {
                 // 添加缓存
                 addDynamicCache(dynamic);
                 result = JsonUtils.objectToJson(dynamic);
+                // 添加动态缓存
+                redisDao.lpush(SocialEnum.DYNAMIC_ + "",dynamicId + "");
             }
             // 1.3、给话题下动态排行查询次数 +1
             redisDao.zincrby(SocialEnum.TAG_DYNAMIC_ + tname,dynamicId+"",1);
 
             // 1.4、给该条动态缓存添加1分钟的过期时间
             redisDao.updateExpire(SocialEnum.DYNAMIC_ + "" + dynamicId,1L * 60 * 1000);
+
+
             results.add(result);
         }
 
@@ -153,14 +160,64 @@ public class DynamicServiceImpl implements DynamicService {
 
     /**
      * 推荐动态查找
+     * @param start
+     * @param end
      * @return
      */
     @Override
-    public ZheXingResult recommend() {
-//        redisDao.
+    public ZheXingResult recommend(Long start, Long end) {
+        List lrange = redisDao.lrange(SocialEnum.DYNAMIC_ + "", start, end);
+        // 封装好每个动态的点赞和评论数
+        ArrayList<Dynamic> list = new ArrayList<>();
+        for(int i = 0; i < lrange.size(); i ++){
+            list.add(searchDynamic(lrange.get(i) + ""));
+        }
+        return ZheXingResult.ok(list);
+    }
 
+    /**
+     * 根据 动态id来查找动态
+     * @param dynamicId
+     * @return
+     */
+    Dynamic searchDynamic(String dynamicId){
+        // 1、先查缓存中是否有该动态，有则返回
+        String s = redisDao.get(SocialEnum.DYNAMIC_ + dynamicId);
+        if(s != null && !s.equals("null"))
+            return JsonUtils.jsonToPojo(s,Dynamic.class);
+        // 2、查数据库中该动态
+        return dynamicDao.selectById(Long.parseLong(dynamicId));
+    }
+
+    /**
+     * 查看已关注人的动态
+     * @param userId 当前用户id
+     * @param start 开始的条数
+     * @param end 查多少条
+     * @return
+     */
+    @Override
+    public ZheXingResult allFollowDynamics(Long userId, Long start, Long end) {
+        // 去缓存中查该用户关注的人  === 暂不做缓存
+
+        // 查数据库中包含这些userId的动态并按逆序排序， limit start,end 来查找
+        // SELECT * FROM tb_dynamic WHERE user_id IN (99,88,71,2) ORDER BY publish_time DESC LIMIT 4,2
         return null;
     }
+
+    /**
+     * 查找某人的动态
+     * @param followId 关注的人的id
+     * @param start 开始的条数
+     * @param end 查多少条
+     * @return
+     */
+    @Override
+    public ZheXingResult followDynamic(Long followId, Long start, Long end) {
+        // 1、去缓存中查该用户的动态id
+        return null;
+    }
+
 
     /**
      * 动态点赞处理
@@ -198,6 +255,25 @@ public class DynamicServiceImpl implements DynamicService {
         return ZheXingResult.ok(sadd);
     }
 
+    /**
+     * 转发动态
+     * @param dynamic
+     * @return
+     */
+    @Override
+    public ZheXingResult forwardDynamic(Dynamic dynamic) {
+        return null;
+    }
+
+    /**
+     * 收藏动态
+     * @param dynamicId
+     * @return
+     */
+    @Override
+    public ZheXingResult collectDynamic(Long dynamicId) {
+        return null;
+    }
 
 
 }

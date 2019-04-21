@@ -43,37 +43,49 @@ public interface DynamicService {
 
 
     /**
-     *  查看已关注人的动态
+     * 查看已关注人的动态
+     * @param userId 当前用户id
+     * @param start 开始的条数
+     * @param end 查多少条
+     * @return
      */
-
+    ZheXingResult allFollowDynamics(Long userId,Long start,Long end);
 
 
     /**
-     *  查看某人发的动态
+     * 查看某人发的动态
+     * @param followId 关注的人的id
+     * @param start 开始的条数
+     * @param end 查多少条
+     * @return
      */
-
+    ZheXingResult followDynamic(Long followId,Long start,Long end);
 
     /**
      * 动态点赞处理
      * @param userId
      * @param dynamicId
      * @param tnames
-     * @param flag 1 表示 点赞； 0（其他）表示取消点赞 -1
+     * @param flag 1 表示 点赞； 0（其他）表示取消点赞
      * @return
      */
     ZheXingResult likeDynamic(Long userId,Long dynamicId,String tnames,int flag);
 
 
-
     /**
-     *  动态转发（分享）
+     * 动态转发（分享）
+     * @param dynamic
+     * @return
      */
-
+    ZheXingResult forwardDynamic(Dynamic dynamic);
 
 
     /**
      *  动态收藏
+     * @param dynamicId
+     * @return
      */
+    ZheXingResult collectDynamic(Long dynamicId);
 
     /**
      *  动态举报

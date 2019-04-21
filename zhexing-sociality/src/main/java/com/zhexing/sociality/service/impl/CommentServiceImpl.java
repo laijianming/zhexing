@@ -8,9 +8,13 @@ import com.zhexing.sociality.pojo.Comment;
 import com.zhexing.sociality.service.CommentService;
 import com.zhexing.sociality.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
+@Service
 public class CommentServiceImpl implements CommentService {
 
     @Autowired
@@ -124,6 +128,21 @@ public class CommentServiceImpl implements CommentService {
             }
 
         return ZheXingResult.ok();
+    }
+
+    /**
+     * 查找前几条的热评
+     * @param dynamicId
+     * @return
+     */
+    @Override
+    public ZheXingResult searchHotComment(Long dynamicId,int start,int n) {
+        // 在缓存中找该动态的 start 开始的 n条热评的commentId
+        Set commentSet = redisDao.zrevrange(SocialEnum.DYNAMIC_HOT_COMMENT_ + "" + dynamicId, start, n, false);
+
+        // 根据commentId来去缓存中查询相应的评论
+        List list = redisDao.hmultiGet(SocialEnum.DYNAMIC_COMMENT_ + "" + dynamicId, commentSet);
+        return ZheXingResult.ok(list);
     }
 
 }
