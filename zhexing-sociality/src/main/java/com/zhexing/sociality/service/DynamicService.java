@@ -33,13 +33,13 @@ public interface DynamicService {
      * @param nums 查出多少条
      * @return
      */
-    ZheXingResult hotDynamic(String tname,int start,int nums);
+    ZheXingResult hotDynamic(String tname,int start,int nums,Long userID);
 
 
     /**
      *  推荐动态查找
      */
-    ZheXingResult recommend(Long start,Long end);
+    ZheXingResult recommend(Long start,Long end,Long userId);
 
 
     /**
@@ -69,7 +69,7 @@ public interface DynamicService {
      * @param flag 1 表示 点赞； 0（其他）表示取消点赞
      * @return
      */
-    ZheXingResult likeDynamic(Long userId,Long dynamicId,String tnames,int flag);
+    ZheXingResult likeDynamic(Long userId,Long dynamicId,String tnames,boolean flag);
 
 
     /**

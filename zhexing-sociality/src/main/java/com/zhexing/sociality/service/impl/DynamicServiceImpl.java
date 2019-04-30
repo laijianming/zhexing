@@ -1,10 +1,11 @@
 package com.zhexing.sociality.service.impl;
 
-import com.google.gson.Gson;
 import com.zhexing.common.resultPojo.ZheXingResult;
 import com.zhexing.sociality.dao.DynamicDao;
 import com.zhexing.sociality.dao.RedisDao;
+import com.zhexing.sociality.dao.UserDao;
 import com.zhexing.sociality.enums.SocialEnum;
+import com.zhexing.sociality.pojo.DynUser;
 import com.zhexing.sociality.pojo.Dynamic;
 import com.zhexing.sociality.pojo.Tag;
 import com.zhexing.sociality.service.DynamicService;
@@ -33,6 +34,9 @@ public class DynamicServiceImpl implements DynamicService {
 
     @Autowired
     RedisDao redisDao;
+
+    @Autowired
+    UserDao userDao;
 
 
     /**
@@ -113,6 +117,7 @@ public class DynamicServiceImpl implements DynamicService {
         return ZheXingResult.ok();
     }
 
+
     /**
      * 热搜话题下动态查找
      * @param tname 话题名
@@ -121,7 +126,7 @@ public class DynamicServiceImpl implements DynamicService {
      * @return
      */
     @Override
-    public ZheXingResult hotDynamic(String tname,int start,int nums) {
+    public ZheXingResult hotDynamic(String tname,int start,int nums,Long userId) {
 
         // 将该话题的热度计数 增加1
         redisDao.zincrby(SocialEnum.HOT_TAG_COUNT_ + "",tname,1);
@@ -144,6 +149,17 @@ public class DynamicServiceImpl implements DynamicService {
                 // 添加动态缓存
                 redisDao.lpush(SocialEnum.DYNAMIC_ + "",dynamicId + "");
             }
+
+            // 1.2.5、添加点赞数和评论数
+            Dynamic dynamic = JsonUtils.jsonToPojo(result, Dynamic.class);
+            lcCount(dynamic,Long.parseLong(dynamicId + ""),userId);
+//            dynamic.setAction(redisDao.sismember(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId,userId + ""));
+//            dynamic.setLikesCount(redisDao.scard(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId));
+//            dynamic.setCommentsCount(redisDao.hlen(SocialEnum.DYNAMIC_COMMENT_ + "" + dynamicId));
+
+            // 补充发动态者信息
+            supplementUserInfo(dynamic);
+
             // 1.3、给话题下动态排行查询次数 +1
             redisDao.zincrby(SocialEnum.TAG_DYNAMIC_ + tname,dynamicId+"",1);
 
@@ -151,12 +167,26 @@ public class DynamicServiceImpl implements DynamicService {
             redisDao.updateExpire(SocialEnum.DYNAMIC_ + "" + dynamicId,1L * 60 * 1000);
 
 
-            results.add(result);
+            results.add(JsonUtils.objectToJson(dynamic));
         }
 
         // 3、返回查到的数据
         return ZheXingResult.ok(results);
     }
+
+    /**
+     * 补充发动态用户的信息
+     * @param dynamic
+     */
+    public void supplementUserInfo(Dynamic dynamic){
+        List<DynUser> dynUsers = userDao.selectById(dynamic);
+        DynUser dynUser = dynUsers.get(0);
+        dynamic.setUname(dynUser.getUname());
+        dynamic.setUnickname(dynUser.getUnickname());
+        dynamic.setUchathead(dynUser.getUchathead());
+
+    }
+
 
     /**
      * 推荐动态查找
@@ -165,15 +195,39 @@ public class DynamicServiceImpl implements DynamicService {
      * @return
      */
     @Override
-    public ZheXingResult recommend(Long start, Long end) {
+    public ZheXingResult recommend(Long start, Long end,Long userId) {
         List lrange = redisDao.lrange(SocialEnum.DYNAMIC_ + "", start, end);
-        // 封装好每个动态的点赞和评论数
+        // 根据上面查的id来查找动态
         ArrayList<Dynamic> list = new ArrayList<>();
-        for(int i = 0; i < lrange.size(); i ++){
-            list.add(searchDynamic(lrange.get(i) + ""));
+        for(int i = 0,len = lrange.size(); i < len; i ++){
+            Dynamic dynamic = searchDynamic(lrange.get(i) + "");
+            Long dynamicId = dynamic.getDynamicId();
+            // 封装好每个动态的点赞和评论数
+            lcCount(dynamic,dynamicId,userId);
+
+            // 补充发动态者信息
+            supplementUserInfo(dynamic);
+
+            list.add(dynamic);
         }
+
         return ZheXingResult.ok(list);
     }
+
+    /**
+     * 封装动态是否点赞，点赞数，评论数
+     * lcCount : l like c comment
+     * @param dynamic
+     * @param dynamicId
+     * @param userId
+     * @return
+     */
+    public void lcCount(Dynamic dynamic,Long dynamicId,Long userId){
+            dynamic.setAction(redisDao.sismember(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId,userId + ""));
+            dynamic.setLikesCount(redisDao.scard(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId));
+            dynamic.setCommentsCount(redisDao.hlen(SocialEnum.DYNAMIC_COMMENT_ + "" + dynamicId));
+    }
+
 
     /**
      * 根据 动态id来查找动态
@@ -214,7 +268,13 @@ public class DynamicServiceImpl implements DynamicService {
      */
     @Override
     public ZheXingResult followDynamic(Long followId, Long start, Long end) {
-        // 1、去缓存中查该用户的动态id
+        // 1、去缓存中查该用户的动态id -- 暂不做缓存
+
+        // 2、查数据库该用户所有的动态的动态id
+
+        // 3、根据动态id查找动态
+
+        // 4、返回查找结果
         return null;
     }
 
@@ -224,14 +284,14 @@ public class DynamicServiceImpl implements DynamicService {
      * @param userId
      * @param dynamicId
      * @param tnames
-     * @param flag 1 表示 点赞； 0（其他）表示取消点赞
+     * @param flag true 表示 点赞；
      * @return
      */
     @Override
-    public ZheXingResult likeDynamic(Long userId, Long dynamicId,String tnames,int flag) {
+    public ZheXingResult likeDynamic(Long userId, Long dynamicId,String tnames,boolean flag) {
         Long sadd;
         double count;
-        if(flag == 1){
+        if(flag){
             // 添加点赞缓存，另有定时任务会去持久化
             sadd = redisDao.sadd(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId, userId + "");
             // 加入持久化队列

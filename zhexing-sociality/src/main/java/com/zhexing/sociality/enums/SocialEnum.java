@@ -26,6 +26,8 @@ public enum SocialEnum {
 
     DYNAMIC_COMMENT_("动态评论"),
 
+    DYNAMIC_COMMENTID_("动态评论id"),
+
     COMMENT_COMMENT_("评论评论"),
 
     NEWS_("新鲜事");

@@ -52,8 +52,8 @@ public class DynamicController {
      * @return
      */
     @GetMapping("/dynamic/hotDynamic")
-    public ZheXingResult searchHotDynamic(String tname,int start,int nums){
-        return dynamicService.hotDynamic(tname,start,nums);
+    public ZheXingResult searchHotDynamic(String tname,int start,int nums,Long userId){
+        return dynamicService.hotDynamic(tname,start,nums,userId);
     }
 
 
@@ -64,8 +64,8 @@ public class DynamicController {
      * @return
      */
     @GetMapping("/dynamic/recommend")
-    public ZheXingResult recommendDynamic(Long start,Long end){
-        return dynamicService.recommend(start,end);
+    public ZheXingResult recommendDynamic(Long start,Long end,Long userId){
+        return dynamicService.recommend(start,end,userId);
     }
 
     /**
@@ -77,7 +77,7 @@ public class DynamicController {
      * @return
      */
     @GetMapping("/dynamic/likeDynamic")
-    public ZheXingResult likeDynamic(Long userId,Long dynamicId,String tnames,int flag){
+    public ZheXingResult likeDynamic(Long userId,Long dynamicId,String tnames,boolean flag){
         return dynamicService.likeDynamic(userId, dynamicId, tnames, flag);
     }
 

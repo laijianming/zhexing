@@ -37,9 +37,11 @@ public interface CommentService {
      */
     ZheXingResult searchHotComment(Long dynamicId,int start,int n);
 
+
     /**
      *  查找该动态的全部评论
      */
+    ZheXingResult getDynamicComments(Long dynamicId,int start,int n,Long userId);
 
     /**
      *  评论评论

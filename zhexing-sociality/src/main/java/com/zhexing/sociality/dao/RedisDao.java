@@ -82,11 +82,30 @@ public class RedisDao {
     /**
      * 获取一个K集合的值
      * @param H
-     * @param collection
+     * @param collection K集合
      * @return
      */
     public List hmultiGet(String H, Collection collection){
         return redisTemplate.opsForHash().multiGet(H,collection);
+    }
+
+
+    /**
+     * hash结构获取一个H的KV数量
+     * @param H
+     * @return
+     */
+    public long hlen(String H){
+        return redisTemplate.opsForHash().size(H);
+    }
+
+    /**
+     * hash结构获取一个H下的所有V
+     * @param H
+     * @return
+     */
+    public List hvalues(String H){
+        return redisTemplate.opsForHash().values(H);
     }
 
 
@@ -102,10 +121,20 @@ public class RedisDao {
         expire(K,millisecond);
         return true;
     }
-    public boolean putAllList(String K,Long millisecond,String[] V){
+    public boolean putAllList(String K,Long millisecond,Object[] V){
         redisTemplate.opsForList().rightPushAll(K,V);
         expire(K,millisecond);
         return true;
+    }
+
+    /**
+     * list正序查找并删除该KV记录
+     * @param K
+     * @param V
+     * @return
+     */
+    public Long lrem(String K,String V){
+        return redisTemplate.opsForList().remove(K, 1, V);
     }
 
     public Long lpush(String K,String V){
@@ -222,7 +251,7 @@ public class RedisDao {
         return add;
     }
 
-    public boolean sadd(String K,String ... V){
+    public boolean sadd(String K,Object[] V){
         redisTemplate.opsForSet().add(K,V);
         return true;
     }
@@ -245,6 +274,20 @@ public class RedisDao {
      */
     public Set smembers(String K){
         return redisTemplate.opsForSet().members(K);
+    }
+
+    /**
+     * 是否为Set结构缓存中的值
+     * @param K
+     * @param member
+     * @return
+     */
+    public Boolean sismember(String K, String member){
+        return redisTemplate.opsForSet().isMember(K,member);
+    }
+
+    public long scard(String K){
+        return redisTemplate.opsForSet().size(K);
     }
 
 

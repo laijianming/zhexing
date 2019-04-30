@@ -47,4 +47,7 @@ public interface DynamicDao {
     @Delete("DELETE FROM tb_dynamic WHERE dynamic_id = #{dynamicId}")
     Integer deleteDynamic(Long dynamicId);
 
+    @Select("SELECT dynamic_id FROM tb_dynamic WHERE user_id = #{userId}")
+    List<Long> selectDynamicIdByUserId(Long userId);
+
 }

@@ -29,12 +29,30 @@ spring:
     port: 6379
     host: 192.168.2.123
 
+
+
+#对于rabbitMQ的支持
+
+#spring.rabbitmq.host=127.0.0.1
+#spring.rabbitmq.port=5672
+#spring.rabbitmq.username=guest
+#spring.rabbitmq.password=guest
+#  rabbitmq:
+#    host: 127.0.0.1
+#    port: 5672
+#    username: zhexing
+#    password:  zhexing
+
+
+
 #开启驼峰命名
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
 #    schema:
 #      - classpath:department.sql
+
+
 
 
 

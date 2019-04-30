@@ -35,12 +35,16 @@ public class CommentServiceImpl implements CommentService {
         comment.setCommentTime(new Date());
         Long aLong = commentDao.publishComment(comment);
 
-        // 2、将评论添加到对应的缓存上 和 动态热评上
+        // 2、将评论添加到对应的缓存上 和 动态热评上 和 动态评论id记录上
         if(aLong >= 1){
+            String commentId = comment.getCommentId() + "";
+            String dynamicId = comment.getDynamicId() + "";
             // 将评论添加到对应的缓存
-            redisDao.hput(SocialEnum.DYNAMIC_COMMENT_ + "" + comment.getDynamicId(),comment.getCommentId() + "",JsonUtils.objectToJson(comment),0L);
+            redisDao.hput(SocialEnum.DYNAMIC_COMMENT_ + dynamicId,commentId,JsonUtils.objectToJson(comment),0L);
             // 将评论添加到对应的动态热评上
-            redisDao.zadd(SocialEnum.DYNAMIC_HOT_COMMENT_ + "" + comment.getDynamicId(),comment.getCommentId() + "",1.0);
+            redisDao.zadd(SocialEnum.DYNAMIC_HOT_COMMENT_ + dynamicId,commentId,1.0);
+            // 将评论id添加到动态评论id记录上
+            redisDao.lpush(SocialEnum.DYNAMIC_COMMENTID_ + dynamicId,commentId);
 
             // 3、给对应动态 和 动态话题下增加1的热度
             if(tname != null && !tname.equals("")){
@@ -78,6 +82,7 @@ public class CommentServiceImpl implements CommentService {
             // 2、删除缓存中的相应记录
             redisDao.hdel(SocialEnum.DYNAMIC_COMMENT_ + "" + dynamicId,commentId + "");
             redisDao.zdel(SocialEnum.DYNAMIC_HOT_COMMENT_ + "" + dynamicId,commentId + "");
+            redisDao.lrem(SocialEnum.DYNAMIC_COMMENTID_ + "" + dynamicId,commentId + "");
             // 3、给对应的动态 和 动态话题热度 -1
             if(tname != null && !tname.equals("")){
                 String[] tnames = tname.split(" ");
@@ -143,6 +148,27 @@ public class CommentServiceImpl implements CommentService {
         // 根据commentId来去缓存中查询相应的评论
         List list = redisDao.hmultiGet(SocialEnum.DYNAMIC_COMMENT_ + "" + dynamicId, commentSet);
         return ZheXingResult.ok(list);
+    }
+
+    /**
+     * 查找动态的评论
+     * @param dynamicId
+     * @param start 从哪开始
+     * @param n 几条
+     * @param userId
+     * @return
+     */
+    @Override
+    public ZheXingResult getDynamicComments(Long dynamicId,int start,int n, Long userId) {
+
+        // 1、查找评论的id
+        List commentIds = redisDao.lrange(SocialEnum.DYNAMIC_COMMENTID_ + "" + dynamicId, start, n);
+
+        // 2、根据评论id查找评论
+        // 查缓存
+        // 查数据库
+
+        return ZheXingResult.ok();
     }
 
 }
