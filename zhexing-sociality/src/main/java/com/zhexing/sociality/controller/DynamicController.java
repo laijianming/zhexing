@@ -82,5 +82,56 @@ public class DynamicController {
     }
 
 
+    /**
+     * 查看已关注人的动态
+     * @param userId 当前用户id
+     * @param start 开始的条数
+     * @param end 查多少条
+     * @return
+     */
+    @GetMapping("/dynamic/allFollowDynamic")
+    ZheXingResult allFollowDynamics(Long userId,Long start,Long end){
+        return dynamicService.allFollowDynamics(userId, start, end);
+    }
+
+    /**
+     * 查看某人发的动态
+     * @param followId 关注的人的id
+     * @param start 开始的条数
+     * @param end 查多少条
+     * @return
+     */
+    @GetMapping("/dynamic/followDynamic")
+    ZheXingResult followDynamic(Long userId,Long followId,Long start,Long end){
+        return dynamicService.followDynamic(userId, followId, start, end);
+    }
+
+
+    // TODO 下面的方法未实现
+
+
+    /**
+     * 动态转发（分享）
+     * @param dynamic
+     * @return
+     */
+    ZheXingResult forwardDynamic(Dynamic dynamic){
+        return dynamicService.forwardDynamic(dynamic);
+    }
+
+    /**
+     *  动态收藏
+     * @param dynamicId
+     * @return
+     */
+    ZheXingResult collectDynamic(Long dynamicId){
+        return dynamicService.collectDynamic(dynamicId);
+    }
+
+
+    /**
+     *  动态举报
+     */
+
 
 }

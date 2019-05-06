@@ -34,13 +34,16 @@ public class FileController {
     @PostMapping("/social/upload/image64")
     public ZheXingResult uploadImage64(String image){
         System.out.println("上传图片 。。。 " + image);
-        return ZheXingResult.ok(GenerateImage(image));
+//        GenerateImage(image)
+        Long random = (long)(Math.random()*100000);
+        String imgFilePath = "D:\\tupian\\" + random + ".jpg";//新生成的图片
+        return ZheXingResult.ok(imgFilePath);
     }
 
-    public static boolean GenerateImage(String imgStr)
+    public static String GenerateImage(String imgStr)
     {   //对字节数组字符串进行Base64解码并生成图片
         if (imgStr == null) //图像数据为空
-            return false;
+            return "";
         BASE64Decoder decoder = new BASE64Decoder();
         try
         {
@@ -54,16 +57,17 @@ public class FileController {
                 }
             }
             //生成jpeg图片
-            String imgFilePath = "D:\\tupian\\new.jpg";//新生成的图片
+            Long random = (long)(Math.random()*100000);
+            String imgFilePath = "D:\\tupian\\" + random + ".jpg";//新生成的图片
             OutputStream out = new FileOutputStream(imgFilePath);
             out.write(b);
             out.flush();
             out.close();
-            return true;
+            return imgFilePath;
         }
         catch (Exception e)
         {
-            return false;
+            return "";
         }
     }
 

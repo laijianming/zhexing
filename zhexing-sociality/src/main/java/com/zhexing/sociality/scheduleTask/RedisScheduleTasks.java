@@ -73,7 +73,7 @@ public class RedisScheduleTasks {
             redisDao.zadd(SocialEnum.HOT_TAG_COUNT_ + "",array[i],20.0 - i);
         }
         long end = new Date().getTime();
-        System.out.println("处理热搜完毕 === >  耗时 == " + (end - start));
+        System.out.println("处理热搜完毕 === >  耗时 == " + (end - start) + " 毫秒");
         System.out.println();
     }
 

@@ -21,11 +21,20 @@ public class Comment {
 
     private String unickname;
 
+    private String uchathead;
+
     private String uname;
 
     private String content;
 
     private Date commentTime;
+
+
+    private boolean action;
+
+    private Long likesCount;
+
+    private Long commentsCount;
 
     // 父评论id
     private Long parentId;

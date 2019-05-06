@@ -47,7 +47,51 @@ public interface DynamicDao {
     @Delete("DELETE FROM tb_dynamic WHERE dynamic_id = #{dynamicId}")
     Integer deleteDynamic(Long dynamicId);
 
-    @Select("SELECT dynamic_id FROM tb_dynamic WHERE user_id = #{userId}")
-    List<Long> selectDynamicIdByUserId(Long userId);
+
+    /**
+     * 根据userId查找dynamicId
+     * @param userId
+     * @return
+     */
+    @Select("SELECT dynamic_id FROM tb_dynamic WHERE user_id = #{userId} LIMIT #{start},#{end}")
+    List<Long> selectDynamicIdByUserId(@Param(value = "userId")Long userId,@Param(value = "start")Long start,@Param(value = "end")Long end);
+
+    /**
+     * 根据dynamicIds 来批量查询dynamic
+     * @param dynamicIds
+     * @return
+     */
+    @Select({
+            "<script>" +
+            "SELECT dynamic_id,user_id,publish_time,content,tnames,images,forward_did FROM tb_dynamic WHERE dynamic_id IN (" +
+            "<foreach collection='dynamicIds' item='item' index='index' separator=','>" +
+            "#{item}" +
+            "</foreach>" +
+            ")" +
+            "</script>"
+            })
+    List<Dynamic> selectDynamicByIds(@Param(value = "dynamicIds")List dynamicIds);
+
+
+    /**
+     * 根据userIds来查找end条dynamic记录并按时间逆序排序
+     * @param userIds
+     * @param start
+     * @param end
+     * @return
+     */
+    //SELECT * FROM tb_dynamic WHERE user_id IN (99,88,71,2) ORDER BY publish_time DESC LIMIT 4,2
+    @Select({
+            "<script>",
+            "SELECT dynamic_id,user_id,publish_time,content,tnames,images,forward_did FROM tb_dynamic WHERE user_id IN (",
+            "<foreach collection='userIds' item='item' index='index' separator=','>",
+            "#{item}",
+            "</foreach>",
+            ") ORDER BY publish_time DESC LIMIT #{start},#{end}",
+            "</script>"
+    })
+    // 需用@Param(value = "") 指定参数，否则报错 Resolved [org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.binding.BindingException: Parameter 'start' not found. Available parameters are [arg2, arg1, userIds, param3, param1, param2]]
+    List<Dynamic> selectDynamicByUserIds(@Param(value = "userIds")List<Long> userIds,@Param(value = "start")Long start,@Param(value = "end")Long end);
+
 
 }

@@ -6,12 +6,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Date;
+
 public class ReturnInceptor implements HandlerInterceptor{
 
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
-		System.out.println("\n ReturnInceptor preHandle start ===> \n  来自 "  + request.getRemoteAddr() + " 的请求 \n deal with url == " + request.getRequestURL());
+		System.out.println("\n ReturnInceptor preHandle start  "+ new Date() +" ===> \n  来自 "  + request.getRemoteAddr() + " 的请求 \n deal with url == " + request.getRequestURL());
 //		response.setHeader("Access-Control-Allow-Origin",  "*");
 //		response.setContentType("application/json;charset=UTF-8");
 		response.addHeader("Access-Control-Allow-Origin", "http://192.168.2.108:8080");

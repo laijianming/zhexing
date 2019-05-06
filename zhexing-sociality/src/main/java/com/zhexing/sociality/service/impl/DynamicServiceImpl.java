@@ -7,6 +7,7 @@ import com.zhexing.sociality.dao.UserDao;
 import com.zhexing.sociality.enums.SocialEnum;
 import com.zhexing.sociality.pojo.DynUser;
 import com.zhexing.sociality.pojo.Dynamic;
+import com.zhexing.sociality.pojo.Image;
 import com.zhexing.sociality.pojo.Tag;
 import com.zhexing.sociality.service.DynamicService;
 import com.zhexing.sociality.service.TagService;
@@ -179,7 +180,7 @@ public class DynamicServiceImpl implements DynamicService {
      * @param dynamic
      */
     public void supplementUserInfo(Dynamic dynamic){
-        List<DynUser> dynUsers = userDao.selectById(dynamic);
+        List<DynUser> dynUsers = userDao.selectById(dynamic.getUserId());
         DynUser dynUser = dynUsers.get(0);
         dynamic.setUname(dynUser.getUname());
         dynamic.setUnickname(dynUser.getUnickname());
@@ -215,17 +216,28 @@ public class DynamicServiceImpl implements DynamicService {
     }
 
     /**
-     * 封装动态是否点赞，点赞数，评论数
+     * 封装动态是否点赞，点赞数，评论数  并处理图片信息
      * lcCount : l like c comment
      * @param dynamic
      * @param dynamicId
-     * @param userId
+     * @param userId 当前用户id
      * @return
      */
     public void lcCount(Dynamic dynamic,Long dynamicId,Long userId){
-            dynamic.setAction(redisDao.sismember(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId,userId + ""));
-            dynamic.setLikesCount(redisDao.scard(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId));
-            dynamic.setCommentsCount(redisDao.hlen(SocialEnum.DYNAMIC_COMMENT_ + "" + dynamicId));
+        dynamic.setAction(redisDao.sismember(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId,userId + ""));
+        dynamic.setLikesCount(redisDao.scard(SocialEnum.LIKE_DYNAMIC_ + "" + dynamicId));
+        dynamic.setCommentsCount(redisDao.hlen(SocialEnum.DYNAMIC_COMMENT_ + "" + dynamicId));
+        // 封装图片信息
+        String images = dynamic.getImages();
+        String mimages = dynamic.getMimages();
+        if(images != null && !images.equals("") && mimages != null && !mimages.equals("")){
+            String[] src = images.split(" ");
+            String[] msrc = mimages.split(" ");
+            dynamic.setImgList(new ArrayList<>());
+            for(int i = 0,len = src.length; i < len; i ++){
+                dynamic.getImgList().add(new Image(src[i],msrc[i]));
+            }
+        }
     }
 
 
@@ -254,9 +266,27 @@ public class DynamicServiceImpl implements DynamicService {
     public ZheXingResult allFollowDynamics(Long userId, Long start, Long end) {
         // 去缓存中查该用户关注的人  === 暂不做缓存
 
-        // 查数据库中包含这些userId的动态并按逆序排序， limit start,end 来查找
+        // 1、查询关注的用户有哪些
+        List<Long> followed_userId = userDao.selectFollowUserByUserId(userId);
+        // 查数据库中包含这些userId的动态并按发布动态时间逆序排序（给最新的动态）， limit start,end 来查找
         // SELECT * FROM tb_dynamic WHERE user_id IN (99,88,71,2) ORDER BY publish_time DESC LIMIT 4,2
-        return null;
+        List<Dynamic> dynamics;
+        if(followed_userId.size() != 0){
+            for(Object o : followed_userId){
+                System.out.println("关注的id ==" + o);
+            }
+            dynamics = dynamicDao.selectDynamicByUserIds(followed_userId, start, end);
+            // 封装动态的其他信息
+            ArrayList result = new ArrayList();
+            for(Dynamic dynamic : dynamics){
+                supplementUserInfo(dynamic);
+                lcCount(dynamic,dynamic.getDynamicId(),userId);
+                result.add(dynamic);
+            }
+            return ZheXingResult.ok(result);
+        }
+        return ZheXingResult.ok(new ArrayList<>());
+
     }
 
     /**
@@ -267,15 +297,20 @@ public class DynamicServiceImpl implements DynamicService {
      * @return
      */
     @Override
-    public ZheXingResult followDynamic(Long followId, Long start, Long end) {
+    public ZheXingResult followDynamic(Long userId,Long followId, Long start, Long end) {
         // 1、去缓存中查该用户的动态id -- 暂不做缓存
 
         // 2、查数据库该用户所有的动态的动态id
-
+        List<Long> dynamicIds = dynamicDao.selectDynamicIdByUserId(followId,start,end);
         // 3、根据动态id查找动态
-
+        List<Dynamic> dynamics = dynamicDao.selectDynamicByIds(dynamicIds);
+        // 封装动态相关信息
+        for(Dynamic dynamic : dynamics){
+            supplementUserInfo(dynamic);
+            lcCount(dynamic,dynamic.getDynamicId(),userId);
+        }
         // 4、返回查找结果
-        return null;
+        return ZheXingResult.ok(dynamics);
     }
 
 

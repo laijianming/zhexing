@@ -28,14 +28,14 @@ public interface CommentService {
      * @param flag 1 表示 点赞； 0（其他）表示 取消点赞
      * @return
      */
-    ZheXingResult likeComment(Long commentId,Long userId,String tname,int flag);
+    ZheXingResult likeComment(Long dynamicId,Long commentId,Long userId,String tname,boolean flag);
 
 
 
     /**
      *  查找前几条的热评
      */
-    ZheXingResult searchHotComment(Long dynamicId,int start,int n);
+    ZheXingResult searchHotComment(Long userId,Long dynamicId,int start,int n);
 
 
     /**
@@ -46,18 +46,18 @@ public interface CommentService {
     /**
      *  评论评论
      */
+    ZheXingResult commentComment(Comment comment);
 
     /**
      *  评论评论删除
      */
+    ZheXingResult deleteCComment(Long commentId,Long parentId);
 
-    /**
-     *  评论评论点赞处理
-     */
 
     /**
      * 查看评论中的所有评论
      */
+    ZheXingResult getCComments(Long parentId,Long userId);
 
 
 }

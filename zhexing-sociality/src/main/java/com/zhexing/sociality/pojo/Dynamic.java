@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class Dynamic implements Serializable {
@@ -29,6 +30,8 @@ public class Dynamic implements Serializable {
 
     // 缩略图
     private String mimages;
+
+    private List<Image> imgList;
 
     private Long forwardDid;
 

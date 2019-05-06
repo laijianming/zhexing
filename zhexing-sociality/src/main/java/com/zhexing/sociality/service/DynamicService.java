@@ -59,7 +59,7 @@ public interface DynamicService {
      * @param end 查多少条
      * @return
      */
-    ZheXingResult followDynamic(Long followId,Long start,Long end);
+    ZheXingResult followDynamic(Long userId,Long followId,Long start,Long end);
 
     /**
      * 动态点赞处理

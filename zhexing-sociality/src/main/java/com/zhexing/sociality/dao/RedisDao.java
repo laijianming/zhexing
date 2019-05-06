@@ -286,6 +286,11 @@ public class RedisDao {
         return redisTemplate.opsForSet().isMember(K,member);
     }
 
+    /**
+     * Set结构缓存的大小
+     * @param K
+     * @return
+     */
     public long scard(String K){
         return redisTemplate.opsForSet().size(K);
     }
