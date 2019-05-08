@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.zhexing.search.dao.DynamicSearchDao">
+ <!-- List<dynamicItem> getDynaList(); -->
+ <select id="getDynaList" resultType="com.zhexing.search.domain.dynamicItem">
+ 	select d.dynamic_id,d.user_id,d.publish_time,d.content contents,d.images,u.unickname user_unickname,u.uname user_uname from tb_dynamic d,tb_user u where d.user_id=u.user_id 
+ </select>
+</mapper>
