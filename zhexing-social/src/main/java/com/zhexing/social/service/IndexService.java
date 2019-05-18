@@ -24,4 +24,7 @@ public interface IndexService {
      */
     ZheXingResult searchUsers(Long userId,String user,Long start,Long end);
 
+
+    ZheXingResult recommendUser(Long userId);
+
 }

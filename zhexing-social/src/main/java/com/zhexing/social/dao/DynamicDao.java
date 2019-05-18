@@ -1,7 +1,7 @@
 package com.zhexing.social.dao;
 
 
-import com.zhexing.social.pojo.Dynamic;
+import com.zhexing.common.pojo.Dynamic;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -49,12 +49,22 @@ public interface DynamicDao {
 
 
     /**
-     * 根据userId查找dynamicId
+     * 根据uname查找dynamicId
      * @param uname
      * @return
      */
     @Select("SELECT dynamic_id FROM tb_dynamic WHERE user_id = (SELECT user_id FROM tb_user WHERE uname = #{uname}) ORDER BY publish_time DESC LIMIT #{start},#{end}")
     List<Long> selectDynamicIdByUserId(@Param(value = "uname")String uname,@Param(value = "start")Long start,@Param(value = "end")Long end);
+
+
+    /**
+     * 查找较新的dynamicId
+     * @param
+     * @return
+     */
+    @Select("SELECT dynamic_id FROM tb_dynamic ORDER BY publish_time DESC LIMIT #{start},#{end}")
+    List<Long> selectDynamicIdByUserIdtrue(@Param(value = "start")Long start,@Param(value = "end")Long end);
+
 
     /**
      * 根据dynamicIds 来批量查询dynamic

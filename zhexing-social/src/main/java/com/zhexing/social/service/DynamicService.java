@@ -1,7 +1,7 @@
 package com.zhexing.social.service;
 
+import com.zhexing.common.pojo.Dynamic;
 import com.zhexing.common.resultPojo.ZheXingResult;
-import com.zhexing.social.pojo.Dynamic;
 
 
 /**

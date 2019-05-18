@@ -1,6 +1,6 @@
 package com.zhexing.social.dao;
 
-import com.zhexing.social.pojo.Comment;
+import com.zhexing.common.pojo.Comment;
 import org.apache.ibatis.annotations.*;
 
 /**

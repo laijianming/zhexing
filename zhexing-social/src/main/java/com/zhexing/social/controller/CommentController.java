@@ -1,14 +1,11 @@
 package com.zhexing.social.controller;
 
+import com.zhexing.common.pojo.Comment;
 import com.zhexing.common.resultPojo.ZheXingResult;
-import com.zhexing.social.pojo.Comment;
 import com.zhexing.social.service.CommentService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 评论处理Controller
@@ -27,7 +24,7 @@ public class CommentController {
      * @return
      */
     @PostMapping("/comment/dynamic")
-    public ZheXingResult dynamicComment(Comment comment,String tnames){
+    public ZheXingResult dynamicComment(Comment comment, String tnames){
         return commentService.dynamicComment(comment,tnames);
     }
 

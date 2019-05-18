@@ -63,7 +63,7 @@ public class FtpUtil {
 			if (!ftp.changeWorkingDirectory(basePath + filePath)) {
 				// 如果目录不存在创建目录
 				String[] dirs = filePath.split("/");
-				String tempPath = "";
+				String tempPath = basePath+"";
 				for (String dir : dirs) {
 					if (null == dir || "".equals(dir))
 						continue;
@@ -163,17 +163,101 @@ public class FtpUtil {
 		}
 		return result;
 	}
-
-	public static void main(String[] args) {
+	/**
+	 * 删除文件接口
+	 *@param host
+	 *            FTP服务器hostname
+	 * @param port
+	 *            FTP服务器端口
+	 * @param username
+	 *            FTP登录账号
+	 * @param password
+	 *            FTP登录密码
+	 * @param Path
+	 * 			  FTP文件的绝对路径	
+	 * @return
+	 */
+	public static boolean deleteFile(String host, int port, String username,
+			String password, String Path) {
+		boolean result = false;
+		FTPClient ftp = new FTPClient();
 		try {
-			FileInputStream in = new FileInputStream(new File(
-					"D:\\haizhi\\image\\test.jpg"));
-			boolean flag = uploadFile("192.168.253.181", 21, "ftpuser",
-					"ftpuser", "/home/ftpuser/www/images", "/2018/08/24",
-					"test.jpg", in);
-			System.out.println(flag);
-		} catch (FileNotFoundException e) {
+			int reply;
+			ftp.connect(host, port);
+			// 如果采用默认端口，可以使用ftp.connect(host)的方式直接连接FTP服务器
+			ftp.login(username, password);// 登录
+			reply = ftp.getReplyCode();
+			if (!FTPReply.isPositiveCompletion(reply)) {
+				ftp.disconnect();
+				return result;
+			}
+			result=ftp.deleteFile(Path);
+			ftp.logout();
+			result = true;
+		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("文件删除失败");
+		} finally {
+			if (ftp.isConnected()) {
+				try {
+					ftp.disconnect();
+				} catch (IOException ioe) {
+				}
+			}
 		}
+		return result;
+	}
+	/**
+	 * 
+	 * @param host
+	 *            FTP服务器hostname
+	 * @param port
+	 *            FTP服务器端口
+	 * @param username
+	 *            FTP登录账号
+	 * @param password
+	 *            FTP登录密码
+	 * @param Path
+	 * 			  FTP文件目录的绝对路径	
+	 * @return
+	 */
+	public static boolean deleteFiles(String host, int port, String username,
+			String password, String dirPath) {
+		boolean result = false;
+		FTPClient ftp = new FTPClient();
+		try {
+			int reply;
+			ftp.connect(host, port);
+			// 如果采用默认端口，可以使用ftp.connect(host)的方式直接连接FTP服务器
+			ftp.login(username, password);// 登录
+			reply = ftp.getReplyCode();
+			if (!FTPReply.isPositiveCompletion(reply)) {
+				ftp.disconnect();
+				return result;
+			}
+			//检查该目录下有没有文件
+			String[] fs=ftp.listNames(dirPath);
+			if(fs==null||fs.length==0){
+				System.out.println("该目录下没有文件!");
+				return result;
+			}
+			for(String file:fs){
+				System.out.println("filepath:"+file);
+				result=ftp.deleteFile(file);
+			}
+			ftp.logout();
+			result = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("文件删除失败");
+		} finally {
+			if (ftp.isConnected()) {
+				try {
+					ftp.disconnect();
+				} catch (IOException ioe) {
+				}
+			}
+		}
+		return result;
 	}
 }

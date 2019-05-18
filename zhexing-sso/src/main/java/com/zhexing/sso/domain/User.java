@@ -14,7 +14,14 @@ private int ustatus;//用户状态码
 private Date created;
 private Date updated;
 private String token;
+private String remember;
 
+public String getRemember(){
+	return this.remember;
+}
+public void setRemember(String remember){
+	this.remember=remember;
+}
 public String getToken() {
 	return token;
 }

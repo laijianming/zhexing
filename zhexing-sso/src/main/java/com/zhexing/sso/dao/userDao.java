@@ -1,9 +1,12 @@
 package com.zhexing.sso.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
-import com.zhexing.sso.domain.User;
-
+import com.zhexing.sso.domain.report;
+import com.zhexing.common.pojo.User;
 public interface userDao {
 /**
  * 对用户注册时每个数据的可行性进行检查
@@ -11,7 +14,7 @@ public interface userDao {
  * @param type字段的类型 1
  * @return
  */
-User datavalidated(@Param("value")String value,@Param("type")String type);
+User datavalidated(@Param("value") String value, @Param("type") String type);
 /**
  * 查询该字段数据，别的用户是否进行使用了！
  * @param value要进行检查的字段
@@ -19,7 +22,7 @@ User datavalidated(@Param("value")String value,@Param("type")String type);
  * @param uname 用户名
  * @return若被别的用户占用了。则返回使用该字段数据的用户。若没有被使用，则返回null
  */
-User datavalidatedbesideLocal(@Param("value")String value,@Param("type")String type,@Param("uname")String uname);
+User datavalidatedbesideLocal(@Param("value") String value, @Param("type") String type, @Param("uname") String uname);
 /**
  * 向数据库添加一个用户
  * @param user
@@ -31,12 +34,12 @@ void addUser(User user);
  * @param password 密码
  * @return 若查询到该用户，返回用户信息，若找不到user对象，则返回null 
  */
-User findUserByUsernameAndPassword(@Param("username")String username,@Param("password")String password);
+User findUserByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 /**
  * 根据标识符来激活账号
  * @param token
  */
-void actionUserByToken(@Param("token")String token); 
+void actionUserByToken(@Param("token") String token);
 /**
  * 根据用户名判断此用户是否激活
  * @param uname
@@ -48,7 +51,7 @@ User isActional(String uname);
  * @param uname
  * @param remember
  */
-void remember(String token,String remember);
+void remember(String token, String remember);
 	/**
 	 * 根据用户名查询出用户对象，若该用户名存在且状态码为1，返回对象，若用户不存在或者没激活，返回一个错误信息
 	 * @param uname
@@ -60,7 +63,7 @@ User findUserByUname(String uname);
 	 * @param uname
 	 * @param path
 	 */
-void updatePhotePathByUname(@Param("uname")String uname,@Param("path") String path);
+void updatePhotePathByUname(@Param("uname") String uname, @Param("path") String path);
 /**
  * 根据用户名更新该用户信息
  * @param uname 用户名
@@ -70,7 +73,7 @@ void updatePhotePathByUname(@Param("uname")String uname,@Param("path") String pa
  * @param unickname 新昵称
  */
 
-void updateUserByUname(@Param("uname")String uname,@Param("unewname")String unewname,@Param("uemail")String email,@Param("uphone")String uphone,@Param("unickname")String unickname);
+void updateUserByUname(@Param("uname") String uname, @Param("unewname") String unewname, @Param("uemail") String email, @Param("uphone") String uphone, @Param("unickname") String unickname);
 
 /**
  * 根据uname将账号ustatus置为0。钝化。
@@ -82,13 +85,38 @@ void inactivationUserByUname(String uname);
  * @param uname
  * @param upassword
  */
-void resetPasswordByUname(@Param("uname")String uname,@Param("upassword")String upassword);
+void resetPasswordByUname(@Param("uname") String uname, @Param("upassword") String upassword);
 /**
  * 更新该用户的激活token
  * @param uname 用户名
  * @param token 激活标志
  */
-void resetUserToken(@Param("uname")String uname,@Param("token")String token);
+void resetUserToken(@Param("uname") String uname, @Param("token") String token);
 
-
+/**
+ * 检查举报类型是否合法
+ * @param type
+ * @return 若合法则返回true，不合法返回false
+ */
+String checkReportType(Integer type);
+/**
+ * 将举报信息存储到数据库
+ * @param report
+ */
+void Recordreport(report report);
+/**
+ * 根据用户名查出上一次头像的位置
+ * @param uname
+ * @return
+ */
+String getPhotoPathByuname(String uname);
+/**
+ * 添加用户被举报警告次数
+ * @param id 被举报用户id
+ */
+void updatereportedNumberByuser_id(int id);
+/**
+ * 根据id查找用户信息
+ */
+User findUserById(Integer id);
 }

@@ -25,7 +25,6 @@ public class IndexController {
      */
     @GetMapping("/index/person")
     public ZheXingResult index(String uname,Long userId) {
-        System.out.println(uname + " ===================" + userId);
         return indexService.personIndex(uname,userId);
 
     }
@@ -42,6 +41,16 @@ public class IndexController {
     @GetMapping("/search/getusers")
     public ZheXingResult getUser(Long userId,String user,Long start,Long end){
         return indexService.searchUsers(userId,user, start, end);
+    }
+
+
+    /**
+     * 推荐好友
+     * @return
+     */
+    @GetMapping("/recommend/user")
+    public ZheXingResult recommendUser(Long userId){
+        return null;
     }
 
 }

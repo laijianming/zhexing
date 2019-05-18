@@ -1,13 +1,14 @@
 package com.zhexing.social.controller;
 
 
+import com.zhexing.common.pojo.Dynamic;
 import com.zhexing.common.resultPojo.ZheXingResult;
-import com.zhexing.social.pojo.Dynamic;
 import com.zhexing.social.service.DynamicService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**

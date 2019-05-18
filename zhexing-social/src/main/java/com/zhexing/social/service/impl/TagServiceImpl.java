@@ -1,11 +1,11 @@
 package com.zhexing.social.service.impl;
 
+import com.zhexing.common.pojo.HotTag;
+import com.zhexing.common.pojo.Tag;
 import com.zhexing.common.resultPojo.ZheXingResult;
 import com.zhexing.social.dao.RedisDao;
 import com.zhexing.social.dao.TagDao;
 import com.zhexing.social.enums.SocialEnum;
-import com.zhexing.social.pojo.HotTag;
-import com.zhexing.social.pojo.Tag;
 import com.zhexing.social.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

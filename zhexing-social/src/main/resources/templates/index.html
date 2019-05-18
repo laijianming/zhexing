@@ -16,28 +16,11 @@
 
 <script type="text/javascript">
     //var websocket = null;
-    let data = null
 
-    function getData () {
-        return new Promise((resolve) => {
-            let xhr = new XMLHttpRequest()
-            xhr.open('GET', 'http://localhost/websocket/getip')
-            xhr.send()
-            xhr.onreadystatechange = function () {
-                if (this.readyState !== 4)
-                    return
-                window.console.log(this.responseText)
-                resolve(JSON.parse(this.responseText))
-            }
-        })
-    }
 
-    getData()
-        .then( res => { doWebsocket(res) } )
 
 
     function doWebsocket(data) {
-        let websocket = null
 
         //将消息显示在网页上
         function setMessageInnerHTML(innerHTML) {
@@ -55,13 +38,12 @@
             websocket.send(message);
         }
 
-        document.getElementById('send').addEventListener('click', function (ev) { send() })
 
         //判断当前浏览器是否支持WebSocket
         if ('WebSocket' in window) {
         // 这个路径就是连接服务器的，与@ServerEndpoint("/websocket")一致
         // websocket = new WebSocket("ws://consumer01:7777/websocket/message/11/test1/xxx");
-        websocket = new WebSocket("ws://"+data.data+"/websocket/"+ BigInt(parseInt(Math.random() * 1000)) +"/tname/test1/xxx");
+        websocket = new WebSocket("ws://192.168.56.1:7777/websocket/15/tname/test1/xxx");
         }
         else {
             alert('当前浏览器 Not support websocket')

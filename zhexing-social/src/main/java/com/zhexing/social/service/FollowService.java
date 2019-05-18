@@ -1,7 +1,7 @@
 package com.zhexing.social.service;
 
+import com.zhexing.common.pojo.Follow;
 import com.zhexing.common.resultPojo.ZheXingResult;
-import com.zhexing.social.pojo.Follow;
 
 /**
  *  关注业务处理接口
@@ -14,7 +14,7 @@ public interface FollowService {
      * @param flag true表示关注，false表示取消关注
      * @return
      */
-    ZheXingResult followUser(Follow follow,boolean flag);
+    ZheXingResult followUser(Follow follow, boolean flag);
 
 
     /**

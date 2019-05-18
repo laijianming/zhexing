@@ -1,5 +1,7 @@
 package com.zhexing.social.service.impl;
 
+import com.zhexing.common.pojo.Comment;
+import com.zhexing.common.pojo.DynUser;
 import com.zhexing.common.resultPojo.ZheXingResult;
 import com.zhexing.social.enums.SocialEnum;
 import com.zhexing.social.service.CommentService;
@@ -7,8 +9,6 @@ import com.zhexing.social.utils.JsonUtils;
 import com.zhexing.social.dao.CommentDao;
 import com.zhexing.social.dao.RedisDao;
 import com.zhexing.social.dao.UserDao;
-import com.zhexing.social.pojo.Comment;
-import com.zhexing.social.pojo.DynUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
      * @return
      */
     @Override
-    public ZheXingResult dynamicComment(Comment comment,String tname) {
+    public ZheXingResult dynamicComment(Comment comment, String tname) {
 
         // 1、将评论插入到数据库中
         comment.setCommentTime(new Date());
@@ -225,12 +225,14 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public ZheXingResult commentComment(Comment comment) {
+        // 补充评论的信息
+        comment.setCommentTime(new Date());
         // 1、将评论插入到数据库中
         commentDao.publishComment(comment);
         // 2、将评论添加到缓存中
         redisDao.hput(SocialEnum.COMMENT_COMMENT_ + ":" + comment.getParentId(),comment.getCommentId() + "",JsonUtils.objectToJson(comment),0L);
 
-        return ZheXingResult.ok();
+        return ZheXingResult.ok(comment);
     }
 
     /**

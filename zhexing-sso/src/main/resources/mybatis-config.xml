@@ -11,8 +11,8 @@
 		<environment id="development">
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
-				<property name="driver" value="com.mysql.jdbc.Driver" />
-				<property name="url" value="jdbc:mysql://129.204.212.52:3333/zhexing?characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull" />
+				<property name="driver" value="com.mysql.cj.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://192.168.2.123:3333/zhexing?characterEncoding=UTF-8&amp;useSSL=true&amp;serverTimezone=UTC" />
 				<property name="username" value="root" />
 				<property name="password" value="zhexing" />
 			</dataSource>
@@ -20,7 +20,6 @@
 	</environments>
 <mappers>
 	<mapper class="com.zhexing.sso.dao.userDao"/>
-	<mapper class="com.zhexing.search.dao.DynamicSearchDao"/>
-	<mapper class="com.zhexing.search.dao.TagSearchDao"/>
+<mapper class="com.zhexing.sso.dao.user_manage_Dao"/>
 </mappers>
 </configuration>

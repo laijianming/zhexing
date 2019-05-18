@@ -3,9 +3,7 @@ package com.zhexing.social.controller;
 import com.zhexing.common.resultPojo.ZheXingResult;
 import com.zhexing.social.utils.FtpUtil;
 import net.coobird.thumbnailator.Thumbnails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
@@ -24,8 +22,9 @@ public class FileController {
      * @param uploadFile
      * @return
      */
-    @PostMapping("/social/upload/file")
-    public ZheXingResult uploadFile(@RequestParam(value = "uploadFile", required = false)  MultipartFile uploadFile) throws IOException {
+//    @PostMapping("/social/upload/file")
+    @RequestMapping(value = "/social/upload/file",method = RequestMethod.POST)
+    public ZheXingResult uploadFile(@RequestBody MultipartFile uploadFile) throws IOException {
         System.out.println("上传文件 。。。 " + uploadFile.getOriginalFilename());
         SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
         String key = df.format(new Date());

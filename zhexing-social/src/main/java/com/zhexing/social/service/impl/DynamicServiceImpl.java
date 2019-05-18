@@ -1,14 +1,14 @@
 package com.zhexing.social.service.impl;
 
+import com.zhexing.common.pojo.DynUser;
+import com.zhexing.common.pojo.Dynamic;
+import com.zhexing.common.pojo.Image;
+import com.zhexing.common.pojo.Tag;
 import com.zhexing.common.resultPojo.ZheXingResult;
 import com.zhexing.social.dao.DynamicDao;
 import com.zhexing.social.dao.RedisDao;
 import com.zhexing.social.dao.UserDao;
 import com.zhexing.social.enums.SocialEnum;
-import com.zhexing.social.pojo.DynUser;
-import com.zhexing.social.pojo.Dynamic;
-import com.zhexing.social.pojo.Image;
-import com.zhexing.social.pojo.Tag;
 import com.zhexing.social.service.DynamicService;
 import com.zhexing.social.service.TagService;
 import com.zhexing.social.utils.JsonUtils;
@@ -179,6 +179,7 @@ public class DynamicServiceImpl implements DynamicService {
      */
     public void supplementUserInfo(Dynamic dynamic){
         List<DynUser> dynUsers = userDao.selectById(dynamic.getUserId());
+        if(dynUsers.size() == 0) return;
         DynUser dynUser = dynUsers.get(0);
         dynamic.setUname(dynUser.getUname());
         dynamic.setUnickname(dynUser.getUnickname());
@@ -195,11 +196,23 @@ public class DynamicServiceImpl implements DynamicService {
      */
     @Override
     public ZheXingResult recommend(Long start, Long end,Long userId) {
+        // 缓存中找userId 的dynamicId
         List lrange = redisDao.lrange(SocialEnum.DYNAMIC_ + "", start, end);
+        // 数据库再找一次的dynamicId
+        List<Long> longs = dynamicDao.selectDynamicIdByUserIdtrue(start, end);
+
+
+        Set<Long> dynamicIdsSet = new HashSet<>(longs);
+        if(lrange != null)
+            for(int i = 0,len = lrange.size(); i < len; i ++){
+                dynamicIdsSet.add(Long.parseLong(lrange.get(i) + ""));
+            }
+
+        Object[] dynamicIds = dynamicIdsSet.toArray();
         // 根据上面查的id来查找动态
         ArrayList<Dynamic> list = new ArrayList<>();
-        for(int i = 0,len = lrange.size(); i < len; i ++){
-            Dynamic dynamic = searchDynamic(lrange.get(i) + "");
+        for(int i = 0,len = dynamicIds.length; i < len; i ++){
+            Dynamic dynamic = searchDynamic(dynamicIds[len - 1 - i] + "");
             Long dynamicId = dynamic.getDynamicId();
             // 封装好每个动态的点赞和评论数
             lcCount(dynamic,dynamicId,userId);

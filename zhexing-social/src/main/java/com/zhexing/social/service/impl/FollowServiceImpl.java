@@ -1,10 +1,10 @@
 package com.zhexing.social.service.impl;
 
+import com.zhexing.common.pojo.Follow;
+import com.zhexing.common.pojo.FollowUser;
+import com.zhexing.common.pojo.IndexUser;
 import com.zhexing.common.resultPojo.ZheXingResult;
 import com.zhexing.social.dao.FollowDao;
-import com.zhexing.social.pojo.Follow;
-import com.zhexing.social.pojo.FollowUser;
-import com.zhexing.social.pojo.IndexUser;
 import com.zhexing.social.service.FollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

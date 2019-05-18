@@ -1,8 +1,7 @@
 package com.zhexing.social.dao;
 
 
-import com.zhexing.social.pojo.DynUser;
-import com.zhexing.social.pojo.IndexUser;
+import com.zhexing.common.pojo.DynUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

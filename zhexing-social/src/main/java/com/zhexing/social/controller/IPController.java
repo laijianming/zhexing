@@ -18,13 +18,6 @@ public class IPController {
      */
     @GetMapping("/websocket/getip")
     public ZheXingResult getIPPort(HttpServletRequest request){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-
-            }
-        }).start();
         return ZheXingResult.ok(request.getLocalAddr() + ":" + request.getLocalPort());
     }
 

@@ -1,6 +1,6 @@
 package com.zhexing.social.scheduleTask;
 
-import com.zhexing.social.pojo.WsUser;
+import com.zhexing.common.pojo.WsUser;
 import com.zhexing.social.websocket.MessageWebsocket;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;

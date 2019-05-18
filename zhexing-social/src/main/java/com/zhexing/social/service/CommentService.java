@@ -1,7 +1,7 @@
 package com.zhexing.social.service;
 
+import com.zhexing.common.pojo.Comment;
 import com.zhexing.common.resultPojo.ZheXingResult;
-import com.zhexing.social.pojo.Comment;
 
 /**
  *  评论业务处理接口
@@ -12,7 +12,7 @@ public interface CommentService {
     /**
      *  动态评论
      */
-    ZheXingResult dynamicComment(Comment comment,String tname);
+    ZheXingResult dynamicComment(Comment comment, String tname);
 
 
     /**

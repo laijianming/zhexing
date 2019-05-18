@@ -1,8 +1,8 @@
 package com.zhexing.social.dao;
 
-import com.zhexing.social.pojo.Follow;
-import com.zhexing.social.pojo.FollowUser;
-import com.zhexing.social.pojo.IndexUser;
+import com.zhexing.common.pojo.Follow;
+import com.zhexing.common.pojo.FollowUser;
+import com.zhexing.common.pojo.IndexUser;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

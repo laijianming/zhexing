@@ -1,6 +1,6 @@
 package com.zhexing.social.websocket;
 
-import com.zhexing.social.pojo.WsUser;
+import com.zhexing.common.pojo.WsUser;
 import com.zhexing.social.utils.JsonUtils;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;

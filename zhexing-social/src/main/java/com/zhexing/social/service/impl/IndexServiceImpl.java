@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class IndexServiceImpl implements IndexService {
@@ -37,14 +38,35 @@ public class IndexServiceImpl implements IndexService {
         return ZheXingResult.ok(followDao.selectUserFollowInfo(indexId,userId));
     }
 
+    /**
+     *
+     * @param userId
+     * @param user uname unickname
+     * @param start
+     * @param end
+     * @return
+     */
     @Override
     public ZheXingResult searchUsers(Long userId,String user,Long start,Long end){
         List<Long> userIds = userDao.selectUsersByUserIdOrUname(user + "%", user + "%", start, end);
         List result = new ArrayList();
+        Long userId1;
         for(int i = 0,len = userIds.size() ;i < len ; i++){
-            result.add(followDao.selectUserFollowInfo(userIds.get(i),userId));
+            userId1 = userIds.get(i);
+            result.add(followDao.selectUserFollowInfo(userId1,userId));
 
         }
+        return ZheXingResult.ok(result);
+    }
+
+    /**
+     * 推荐好友  实现：推荐自己关注的人的关注 若不够三个，则推荐热度比较高的几个用户
+     * @param userId
+     * @return
+     */
+    @Override
+    public ZheXingResult recommendUser(Long userId){
+
         return ZheXingResult.ok();
     }
 }

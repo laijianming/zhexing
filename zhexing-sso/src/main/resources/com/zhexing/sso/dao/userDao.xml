@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.zhexing.sso.dao.userDao">
+ <!-- User datavalidated(String value,String type); -->
+<select id="datavalidated" resultType="com.zhexing.common.pojo.User">
+ 	select user_id,uname,unickname,upassword,uchathead,uphone,uemail,ustatus from tb_user 
+ 	<where>
+ 		<if test="type=='uname'">
+ 			uname =#{value}
+ 		</if>
+ 		<if test="type=='uphone'">
+ 			uphone=#{value}
+ 		</if>
+ 		<if test="type=='uemail'">
+ 			uemail=#{value}
+ 		</if>
+ 		<if test="type=='unewname'">
+ 			uname =#{value}
+ 		</if>
+ 	</where> 
+ 	
+ </select>
+ <!-- User datavalidatedbesideLocal(@Param("value")String value,@Param("type")String type,@Param("uname")String uname); -->
+  <select id="datavalidatedbesideLocal" resultType="com.zhexing.common.pojo.User">
+ 	select user_id,uname,unickname,upassword,uchathead,uphone,uemail,ustatus from tb_user 
+ 	<where>
+ 		<if test="type=='uname'">
+ 			uname =#{value}
+ 		</if>
+ 		<if test="type=='uphone'">
+ 			uphone=#{value}
+ 		</if>
+ 		<if test="type=='uemail'">
+ 			uemail=#{value}
+ 		</if>
+ 		and uname !=#{uname}
+ 	</where>
+ </select>
+ 
+ 
+ <!-- void addUser(User user); -->
+<insert id="addUser">
+	insert into tb_user(uname,upassword,unickname,uchathead,uphone,uemail,ustatus,created,updated,token) values(#{uname},#{upassword},#{unickname},#{uchathead},#{uphone},#{uemail},#{ustatus},#{created},#{updated},#{token})
+</insert> 
+ <!-- User findUserByUsernameAndPassword(@Param("username") String username, @Param("password") String password);-->
+ <!-- User findUserByUsernameAndPassword(String username,String password); -->
+<select id="findUserByUsernameAndPassword" resultType="com.zhexing.common.pojo.User">
+	select user_id,uname,unickname,upassword,uchathead,uphone,uemail,ustatus from tb_user where uname=#{username} and upassword=#{password}
+</select>
+
+<!-- void actionUserByToken(String token);-->
+<update id="actionUserByToken">
+    UPDATE tb_user SET ustatus=1 WHERE token=#{token}
+</update> 
+
+<!-- User isActional(String uname); -->
+
+<select id="isActional"  resultType="com.zhexing.common.pojo.User">
+	select user_id,uname,unickname,upassword,uchathead,uphone,uemail,ustatus from tb_user where uname=#{uname} and ustatus=1;
+</select>
+
+<!-- User findUserByUname(String uname); -->
+<select id="findUserByUname" resultType="com.zhexing.common.pojo.User">
+	select user_id,uname,unickname,upassword,uchathead,uphone,uemail,ustatus from tb_user where uname=#{uame} and ustatus=1
+</select>
+<!-- void updatePhotePathByUname(String uname, String path); -->
+<update id="updatePhotePathByUname">
+update tb_user set uchathead=#{path} where uname=#{uname}
+</update>
+<!-- void updateUserByUname(@Param("uname")String uname,@Param("unewname")String unewname,@Param("uemail")String email,@Param("uphone")String uphone,@Param("unickname")String unickname); -->
+<update id="updateUserByUname">
+	update tb_user 
+	  <set>
+	  	<if test="unewname!=null">
+	  		uname=#{unewname},
+	  	</if>
+	  	<if test="uemail!=null">
+	  		uemail=#{uemail},
+	  	</if>
+	  	<if test="unickname!=null">
+	  		unickname=#{unickname},
+	  	</if>
+	  	<if test="uphone!=null">
+	  		uphone=#{uphone},
+	  	</if>
+	  </set>
+		<where>
+			uname=#{uname}
+		</where>
+</update>
+
+<!-- void inactivationUserByUname(String uname); -->
+<update id="inactivationUserByUname">
+	update tb_user set ustatus=0 where uname=#{uname}
+</update>
+<!-- void resetPasswordByUname(@Param("uname")String uname,@Param("upassword")String upassword); -->
+<update id="resetPasswordByUname">
+	update tb_user set upassword=#{upassword} where uname=#{uname}
+</update>
+<!-- void resetUserToken(@Param("uname")String uname,@Param("token")String token); -->
+<update id="resetUserToken">
+update tb_user set token=#{token} where uname=#{uname}
+</update>
+
+<!-- boolean checkReportType(Integer type); -->
+<select id="checkReportType" resultType="java.lang.String">
+	select report_desc from tb_report_type where report_type=#{type}
+</select>
+
+<!-- void Recordreport(report report); -->
+<insert id="Recordreport">
+	insert into tb_user_report(reporter_id,report_content,report_type,reported_time,reported_id) 
+	values(#{report.reporter_id},#{report.report_content},#{report.report_type},#{report.reported_time},#{report.reported_id})
+</insert>
+
+<!-- String getPhotoPathByuname(String uname); -->
+<select id="getPhotoPathByuname" resultType="java.lang.String">
+	select uchathead from tb_user where uname=#{uname}
+</select>
+<!-- void updatereportedNumberByuser_id(int id); -->
+<update id="updatereportedNumberByuser_id">
+	update tb_user_report set reported_number=reported_number+1 where user_id=#{id}
+</update>
+<!-- void findUserById(); -->
+<select id="findUserById" resultType="com.zhexing.common.pojo.User">
+	user_id,uname,unickname,upassword,uchathead,uphone,uemail,ustatus from tb_user where user_id=#{id}
+</select>
+ </mapper>

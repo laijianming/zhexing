@@ -1,6 +1,6 @@
 package com.zhexing.social.dao;
 
-import com.zhexing.social.pojo.Tag;
+import com.zhexing.common.pojo.Tag;
 import org.apache.ibatis.annotations.*;
 
 import java.util.ArrayList;
