@@ -73,7 +73,7 @@ public class TagServiceImpl implements TagService {
     public ZheXingResult hotTags() {
 
         // 1、查找话题排行中的前10条数据
-        List lrange = redisDao.lrange(SocialEnum.HOT_TAG_ + "", 0, 10);
+        List lrange = redisDao.lrange(SocialEnum.HOT_TAG_ + "", 0, 9);
         // 2、查出每个话题下有多少条动态
         HotTag[] tags = new HotTag[lrange.size()];
         for(int i = 0; i < lrange.size(); i ++){

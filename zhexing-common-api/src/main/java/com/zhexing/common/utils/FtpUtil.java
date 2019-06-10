@@ -46,7 +46,7 @@ public class FtpUtil {
 			//ftp.setControlEncoding("GB2312");
 			ftp.connect(host, port);// 连接FTP服务器
 			// 如果采用默认端口，可以使用ftp.connect(host)的方式直接连接FTP服务器
-			
+			System.out.println("username:"+username+"  pswd:"+password);
 			boolean login=ftp.login(username, password);// 登录
 			System.out.println("login:"+login);
 			reply = ftp.getReplyCode();
@@ -180,6 +180,7 @@ public class FtpUtil {
 			int reply;
 			ftp.connect(host, port);
 			// 如果采用默认端口，可以使用ftp.connect(host)的方式直接连接FTP服务器
+
 			ftp.login(username, password);// 登录
 			reply = ftp.getReplyCode();
 			if (!FTPReply.isPositiveCompletion(reply)) {

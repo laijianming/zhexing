@@ -1,5 +1,6 @@
 package com.zhexing.zhexingzuul.service;
 
+import javax.management.StringValueExp;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -9,11 +10,7 @@ import com.zhexing.zhexingzuul.fallback.SsoFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zhexing.common.resultPojo.ZheXingResult;
@@ -40,15 +37,15 @@ public interface SsoService {
 	 * 若redis中不存在或者该标签已过期，返回失败标志
 	 */
 	@RequestMapping("/register/token/{token}")
-	ZheXingResult getUserBuToken(@RequestParam("token") String token);
+	ZheXingResult getUserBuToken(@PathVariable("token")String token);
 	
 	/**
 	 * 激活该标志的账号
 	 * @param token
 	 * @return
 	 */
-	@RequestMapping("/activate/{token}")
-	ZheXingResult activateUserByToken(@RequestParam("token") String token);
+	@RequestMapping("/register/activate/{token}")
+	ZheXingResult activateUserByToken(@PathVariable("token")String token);
 	
 	/**
 	 * 注销
@@ -82,7 +79,7 @@ public interface SsoService {
 	 * @throws Exception
 	 */
 	@RequestMapping("/register/check/{value}/{type}")
-	ZheXingResult checkData(@RequestParam("value") String value, @RequestParam("type") String type)throws Exception;
+	ZheXingResult checkData(@PathVariable("value")String value,@PathVariable("type")String type)throws Exception;
 	/**
 	 * 登录的总处理接口
 	 * @return
@@ -102,7 +99,7 @@ public interface SsoService {
 	 * @return
 	 */
 	@RequestMapping(value="/UpdateUserMessage")
-	ZheXingResult updateUserMessage(@RequestParam("uname") String uname, @RequestParam("uemail") String uemail, @RequestParam("unickname") String unickname, @RequestParam("newuname") String newuname, @RequestParam("uphone") String uphone, @RequestParam("token") String token);
+	ZheXingResult updateUserMessage(@RequestParam("uname") String uname, @RequestParam("uemail") String uemail, @RequestParam("unickname") String unickname, @RequestParam("newname") String newname, @RequestParam("uphone") String uphone);
     /**
      * 重置密码总接口
      * @return

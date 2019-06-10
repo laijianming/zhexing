@@ -130,30 +130,34 @@ public class DynamicServiceImpl implements DynamicService {
     @Override
     public ZheXingResult hotDynamic(String tname,int start,int nums,Long userId) {
 
+        // 1、查redis缓存中热点动态缓存 start开始 nums条数的 dynamicId
+        Set set = redisDao.zrevrange(SocialEnum.TAG_DYNAMIC_ + ":" + tname, start, nums, false);
+        // 没有这个话题
+        if(set.size() == 0) return ZheXingResult.ok();
+
         // 将该话题的热度计数 增加1
         redisDao.zincrby(SocialEnum.HOT_TAG_COUNT_ + "",tname,1);
 
-        // 1、查redis缓存中热点动态缓存 start开始 nums条数的 dynamicId
-        Set set = redisDao.zrevrange(SocialEnum.TAG_DYNAMIC_ + ":" + tname, start, nums, false);
         Iterator iterator = set.iterator();
-        ArrayList<String> results = new ArrayList<>();
+        ArrayList<Dynamic> results = new ArrayList<>();
         while (iterator.hasNext()){  // 通过dynamicId 查找缓存中或数据库中的动态信息
             Object dynamicId = iterator.next();  // dynamicId 是该 动态 id
-            // 1.1、从缓存中查找相应的动态缓存数据
-            String result = redisDao.get(dynamicId + "");
-            // 1.2、若缓存中未找到，则从数据库中查找
-            if(result.equals("null")){
-                long l = Long.parseLong("" + dynamicId);
-                Dynamic dynamic = dynamicDao.selectById(l);
-                // 添加缓存
-                addDynamicCache(dynamic);
-                result = JsonUtils.objectToJson(dynamic);
-                // 添加动态缓存
-                redisDao.lpush(SocialEnum.DYNAMIC_ + "",dynamicId + "");
-            }
+//            // 1.1、从缓存中查找相应的动态缓存数据
+//            String result = redisDao.get(dynamicId + "");
+//            // 1.2、若缓存中未找到，则从数据库中查找
+//            if(result.equals("null")){
+//                long l = Long.parseLong("" + dynamicId);
+//                Dynamic dynamic = dynamicDao.selectById(l);
+//                // 添加缓存
+//                addDynamicCache(dynamic);
+//                result = JsonUtils.objectToJson(dynamic);
+//                // 添加动态缓存
+//                redisDao.lpush(SocialEnum.DYNAMIC_ + "",dynamicId + "");
+//            }
+            Dynamic dynamic = searchDynamic(dynamicId + "");
 
             // 1.2.5、添加点赞数和评论数
-            Dynamic dynamic = JsonUtils.jsonToPojo(result, Dynamic.class);
+//            Dynamic dynamic = JsonUtils.jsonToPojo(result, Dynamic.class);
             lcCount(dynamic,Long.parseLong(dynamicId + ""),userId);
 
             // 补充发动态者信息
@@ -166,7 +170,7 @@ public class DynamicServiceImpl implements DynamicService {
             redisDao.updateExpire(SocialEnum.DYNAMIC_ + ":" + dynamicId,1L * 60 * 1000);
 
 
-            results.add(JsonUtils.objectToJson(dynamic));
+            results.add(dynamic);
         }
 
         // 3、返回查到的数据
@@ -196,23 +200,34 @@ public class DynamicServiceImpl implements DynamicService {
      */
     @Override
     public ZheXingResult recommend(Long start, Long end,Long userId) {
-        // 缓存中找userId 的dynamicId
-        List lrange = redisDao.lrange(SocialEnum.DYNAMIC_ + "", start, end);
+        // 缓存中找dynamicId
+//        List lrange = redisDao.lrange(SocialEnum.DYNAMIC_ + "", start, end);
         // 数据库再找一次的dynamicId
         List<Long> longs = dynamicDao.selectDynamicIdByUserIdtrue(start, end);
 
 
         Set<Long> dynamicIdsSet = new HashSet<>(longs);
-        if(lrange != null)
-            for(int i = 0,len = lrange.size(); i < len; i ++){
-                dynamicIdsSet.add(Long.parseLong(lrange.get(i) + ""));
-            }
+//        if(lrange != null)
+//            for(int i = 0,len = lrange.size(); i < len; i ++){
+//                dynamicIdsSet.add(Long.parseLong(lrange.get(i) + ""));
+//            }
 
         Object[] dynamicIds = dynamicIdsSet.toArray();
+        Arrays.sort(dynamicIds);
+        System.out.print("dynamicIds == { " );
+        for(Object o : dynamicIds){
+            System.out.print(o + " ");
+        }
+        System.out.println(" }");
         // 根据上面查的id来查找动态
         ArrayList<Dynamic> list = new ArrayList<>();
-        for(int i = 0,len = dynamicIds.length; i < len; i ++){
+        for(int i = 0,len = dynamicIds.length; i < len && i < 10; i ++){
             Dynamic dynamic = searchDynamic(dynamicIds[len - 1 - i] + "");
+            if(dynamic == null){
+                System.out.println("continue ......" + dynamicIds[len - 1 - i]) ;
+                continue;
+
+            }
             Long dynamicId = dynamic.getDynamicId();
             // 封装好每个动态的点赞和评论数
             lcCount(dynamic,dynamicId,userId);

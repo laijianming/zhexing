@@ -34,8 +34,10 @@ public class CopyOfLoginControll {
 		 return null;
 	 }
 	 @PostMapping("/uploadIcon")
-	 public ZheXingResult lll(@RequestParam("uname")String uname, HttpServletResponse response, MultipartFile file1){
-		 ZheXingResult result= userseriver.photoUpload(file1,uname);
+	 public ZheXingResult lll(String uname, MultipartFile file1){
+		 System.out.println(uname);
+		 System.out.println(file1.getSize());
+		ZheXingResult result= userseriver.photoUpload(file1,uname);
 		 System.out.println(result.getData());
 		 return result;
 	 	}
@@ -50,8 +52,8 @@ public class CopyOfLoginControll {
 	}
 	
 	@RequestMapping(value="/UpdateUserMessage")
-	public ZheXingResult updateUserMessage(String uname,String uemail,String unickname,String newuname,String uphone,String token){
-			ZheXingResult result=userseriver.updateUserMessage(uname, uemail, unickname, newuname, uphone, token);
+	public ZheXingResult updateUserMessage(String uname,String uemail,String unickname,String newname,String uphone){
+			ZheXingResult result=userseriver.updateUserMessage(uname, uemail, unickname, newname, uphone);
 			return result;
 	}
 	@RequestMapping(value="/checkPassword",method=RequestMethod.POST)

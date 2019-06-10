@@ -169,7 +169,7 @@ public interface Userservice {
 	 * @param token
 	 * @return
 	 */
-	ZheXingResult updateUserMessage(String uname, String uemail, String unickname, String newuname, String uphone, String token);
+	ZheXingResult updateUserMessage(String uname, String uemail, String unickname, String newname, String uphone);
     /**
      * 重置密码总接口
      * @param request

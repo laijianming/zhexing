@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="zhexing-common-api" />
+        <module name="zhexing-config" />
+        <module name="zhexing-dashboard" />
+        <module name="zhexing-eureka01" />
+        <module name="zhexing-eureka02" />
+        <module name="zhexing-manage" />
+        <module name="zhexing-search" />
+        <module name="zhexing-social" />
+        <module name="zhexing-sso" />
+        <module name="zhexing-zipkin" />
+        <module name="zhexing-zuul" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="zhexing-common-api" target="1.8" />
+      <module name="zhexing-config" target="1.8" />
+      <module name="zhexing-consumer" target="1.8" />
+      <module name="zhexing-dashboard" target="1.8" />
+      <module name="zhexing-eureka01" target="1.8" />
+      <module name="zhexing-eureka02" target="1.8" />
+      <module name="zhexing-manage" target="1.8" />
+      <module name="zhexing-parent" target="1.8" />
+      <module name="zhexing-search" target="1.8" />
+      <module name="zhexing-social" target="1.8" />
+      <module name="zhexing-sso" target="1.8" />
+      <module name="zhexing-zipkin" target="1.8" />
+      <module name="zhexing-zuul" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

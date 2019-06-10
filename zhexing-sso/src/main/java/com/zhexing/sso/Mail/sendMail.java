@@ -28,7 +28,7 @@ public static void Send(User user,String HostURL) throws Exception{
 	message.setFrom(new InternetAddress("1374413599@qq.com"));
 	message.setRecipients(Message.RecipientType.TO, ""+user.getUemail());
 	message.setSubject("[zhexing] Please verify your email address.");
-	message.setContent("亲爱的"+user.getUnickname()+",感谢宁在[zhexing]注册账号<br/><h5>请猛戳下面的超链接以激活</h5><a href='http://"+HostURL+"/register/activate?token="+user.getToken()+"'>戳这里</a><br/>此邮件由系统自动发出，请勿回复信息！", "text/html;charset=UTF-8");
+	message.setContent("亲爱的"+user.getUnickname()+",感谢你在[zhexing]注册账号<br/><h5>请猛戳下面的超链接以激活</h5><a href='http://"+HostURL+"/register/activate/"+user.getToken()+"'>戳这里</a><br/>此邮件由系统自动发出，请勿回复信息！", "text/html;charset=UTF-8");
 	message.saveChanges();
 	Transport ts=session.getTransport();
 	ts.connect("1374413599@qq.com", "liudgwdarlwjbaej");

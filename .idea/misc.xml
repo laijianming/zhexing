@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-sociality/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-common-api/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-search/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-sso/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-social/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-manage/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-eureka01/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-eureka02/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-dashboard/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-zuul/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-zipkin/pom.xml" />
+        <option value="$PROJECT_DIR$/zhexing-config/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+</project>

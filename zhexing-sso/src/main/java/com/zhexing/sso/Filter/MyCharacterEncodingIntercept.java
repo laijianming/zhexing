@@ -17,6 +17,7 @@ public class MyCharacterEncodingIntercept implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
+		System.out.println(request.getRequestURL());
 		System.out.println("乱码拦截器启动！");
 		request.setCharacterEncoding("UTF-8");//解决POST请求乱码
 		response.setContentType("text/html;charset=UTF-8");//解决响应乱码问题

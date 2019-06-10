@@ -1,0 +1,22 @@
+server:
+  port: 8002
+eureka:
+  instance:
+    hostname: zhexing-eureka
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+     defaultZone: http://localhost:8001/eureka/
+spring:
+  application:
+    name: zhexing-eureka
+info:
+  app.name: ${eureka.instance.hostname}
+  author.name: jianming
+  project.version: ${project.version}
+
+
+
+
+

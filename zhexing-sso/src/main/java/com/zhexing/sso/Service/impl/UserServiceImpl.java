@@ -40,14 +40,22 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import redis.clients.jedis.Jedis;
 @Service
 public class UserServiceImpl implements Userservice {
-	private String redisIP = "129.204.212.52";
-	private String HostUrl = "129.204.212.52:8888";
-	private String uploadHost = "129.204.212.52";
-	private String uploadPath = "/home/zhexing/images";
-	private String userName = "xuzeqin";
-	private String pswd = "xuzeqin";;
-	private Integer port = 21;
-	private Integer redisPort = 6379;
+	@Value("${spring.redis.host}")
+	private String redisIP ;
+	@Value("${HostUrl}")
+	private String HostUrl ;
+	@Value("${uploadHost}")
+	private String uploadHost ;
+	@Value("${uploadPath}")
+	private String uploadPath;
+	@Value("${ftp.username}")
+	private String userName;
+	@Value("${pswd}")
+	private String pswd;;
+	@Value("${port}")
+	private Integer port ;
+	@Value("${spring.redis.port}")
+	private Integer redisPort;
 	@Override
 	public ZheXingResult DataValidated(String value, String type) {
 		SqlSession  session=SqlSessionUtil.getSqlSession();
@@ -101,7 +109,7 @@ public class UserServiceImpl implements Userservice {
 			User user=userDao.findUserByUsernameAndPassword(username, SecurityUtil.md5(password));
 			//若返回的user为null，证明用户名或密码错误
 			if(user==null){
-				return ZheXingResult.build(400, "用户名或者密码错误");
+				return ZheXingResult.build(405, "用户名或者密码错误");
 			}
 			//获得redis客户端
 			Jedis jedis=new Jedis(redisIP, redisPort);
@@ -169,6 +177,7 @@ public class UserServiceImpl implements Userservice {
 		SqlSession  session=SqlSessionUtil.getSqlSession();
 		userDao userDao=session.getMapper(userDao.class);
 		//调用dao层去激活账号
+		System.out.println("token:"+token);
 		userDao.actionUserByToken(token);
 		session.commit();
 		session.close();
@@ -444,18 +453,28 @@ public class UserServiceImpl implements Userservice {
 					userDao dao=session.getMapper(userDao.class);
 					try {
 						String oldPath=dao.getPhotoPathByuname(uname);
-						if(oldPath!=null||!"".equals(oldPath.trim())){
+						if(oldPath!=null){
+
 							oldPath=oldPath.substring(oldPath.indexOf("/")+1);
 							oldPath=oldPath.substring(oldPath.indexOf("/")+1);
 							oldPath=uploadPath+"/"+oldPath;
 							System.out.println("oldpath:"+oldPath);
 							FtpUtil.deleteFile(uploadHost, port, userName, pswd, oldPath);
+							FtpUtil.uploadFile(uploadHost, port, userName, pswd, uploadPath, imgPath, newName, file1.getInputStream());
+							String returnPath=uploadPath.substring(uploadPath.lastIndexOf("/"));
+							dao.updatePhotePathByUname(uname, uploadHost+"/files"+imgPath+"/"+newName);
+							return ZheXingResult.ok(uploadHost+returnPath+imgPath+"/"+newName);
 						}
-						FtpUtil.uploadFile(uploadHost, port, userName, pswd, uploadPath, imgPath, newName, file1.getInputStream());
-						String returnPath=uploadPath.substring(uploadPath.lastIndexOf("/"));
-						dao.updatePhotePathByUname(uname, uploadHost+"/files"+imgPath+"/"+newName);
-						return ZheXingResult.ok(uploadHost+returnPath+imgPath+"/"+newName);
-					} catch (IOException e) {
+						else {
+							System.out.println("+++++++++空");
+							System.out.println("+++++++++空");
+							System.out.println("+++++++++空");System.out.println("+++++++++空");System.out.println("+++++++++空");
+							FtpUtil.uploadFile(uploadHost, port, userName, pswd, uploadPath, imgPath, newName, file1.getInputStream());
+							String returnPath=uploadPath.substring(uploadPath.lastIndexOf("/"));
+							dao.updatePhotePathByUname(uname, uploadHost+"/files"+imgPath+"/"+newName);
+							return ZheXingResult.ok(uploadHost+returnPath+imgPath+"/"+newName);
+						}
+					} catch (Exception e) {
 						e.printStackTrace();
 						return ZheXingResult.build(500, e.getMessage());
 					}finally{
@@ -467,7 +486,7 @@ public class UserServiceImpl implements Userservice {
 	@Override
 	public ZheXingResult checkData(String value, String type,
 			HttpSession session) throws Exception {
-		if(!type.equals("uname")&&!type.equals("uemail")&&!type.equals("uphone")&&!type.equals("code")&&!type.equals("unewname")){//若数据类型不需要这三种之一，则验证失败
+		if(!type.equals("uname")&&!type.equals("uemail")&&!type.equals("uphone")&&!type.equals("code")&&!type.equals("newname")){//若数据类型不需要这三种之一，则验证失败
 			return ZheXingResult.build(400, "数据验证类型错误");
 		}
 		if(!type.equals("code")){
@@ -505,34 +524,24 @@ public class UserServiceImpl implements Userservice {
 
 	@Override
 	public ZheXingResult updateUserMessage(String uname, String uemail,
-			String unickname, String newuname, String uphone, String token) {
+			String unickname, String newname, String uphone) {
 		//作为邮箱是否被修改标志项
 		boolean email=false;
 		User user=new User();
 		//当邮箱被修改时
 	if(uemail!=null&&!"".equals(uemail.trim())){
-		ZheXingResult result=DataValidatedBesideLocal(uname, "uemail", uemail);
-		if((boolean)result.getData()==false){
-			return ZheXingResult.build(400, "该email已被占用！");
-		}
+
 		//标识邮箱被修改
 		email=true; 
 		user.setUemail(uemail);
 	}
 	//当用户名被修改时
-	if(newuname!=null&&!"".equals(newuname.trim())){
-		ZheXingResult result1=DataValidatedBesideLocal(uname, "newuname", newuname);
-		if((boolean)result1.getData()==false){
-			return ZheXingResult.build(400, "该用户名已被占用！");
-		}
-		
+	if(newname!=null&&!"".equals(newname.trim())){
+		user.setUname(newname);
 	}
 	//当用户手机被修改时
 	if(uphone!=null&&!"".equals(uphone.trim())){
-		ZheXingResult result1=DataValidatedBesideLocal(uname, "uphone", uphone);
-		if((boolean)result1.getData()==false){
-			return ZheXingResult.build(400, "该手机号已被占用！");
-		}
+
 		user.setUphone(uphone);
 	}
 	if(unickname!=null&&!"".equals(unickname.trim())){
@@ -546,20 +555,21 @@ public class UserServiceImpl implements Userservice {
 	if(email==true&&result.getStatus()==200){
 		try {
 			//设置user对象的uname
-			if(newuname==null){
-				newuname=uname;
+			if(newname==null){
+				newname=uname;
 			}
-			user.setUname(newuname);
+			user.setUname(newname);
+			System.out.println(newname);
 			//重置user用户的邮箱激活token
 			ZheXingResult result2=resetUserToken(user);
 			//获得新的激活码
 			user.setToken((String)result2.getData());
 			//钝化该user用户，是ustatus为0
-			inactivationByUname(newuname);
+			inactivationByUname(newname);
 			//发送邮件到新邮箱，提醒激活账号
-			sendMail.Send(user,HostUrl);
+			//sendMail.Send(user,HostUrl);
 			result.setMsg("亲爱的用户，由于你的邮箱进行了更改，系统已发送了一封激活邮件至宁的新邮箱 email:"+uemail+"  。请尽快前往邮箱激活账号吧！！！");
-		resetLoginStatusByToken(token);
+		//resetLoginStatusByToken(token);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ZheXingResult.build(500,"账号钝化失败！");

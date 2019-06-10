@@ -79,6 +79,7 @@ public class DynamicController {
      */
     @GetMapping("/dynamic/likeDynamic")
     public ZheXingResult likeDynamic(Long userId,Long dynamicId,String tnames,boolean flag){
+        System.out.println("likeDynamic " + userId + " " + dynamicId + " " + tnames + " " + flag);
         return dynamicService.likeDynamic(userId, dynamicId, tnames, flag);
     }
 

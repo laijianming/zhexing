@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-common-api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-config" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-dashboard" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-eureka01" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-eureka02" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-manage" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-search" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-social" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-sso" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-zipkin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-zuul" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/zhexing-zuul/src/main/resources/application.yml" charset="UTF-8" />
+  </component>
+</project>

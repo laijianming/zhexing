@@ -7,6 +7,7 @@ import com.zhexing.zhexingzuul.service.SocialService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -43,12 +44,14 @@ public class DynamicController {
      * 获取热点话题下的动态
      * @param tname
      * @param start
-     * @param nums
+     * @param end
      * @return
      */
     @GetMapping("/dynamic/hotDynamic")
-    public ZheXingResult searchHotDynamic(String tname,int start,int nums,Long userId){
-        return socialService.searchHotDynamic(tname,start,nums,userId);
+    public ZheXingResult searchHotDynamic(@RequestParam("tname") String tname,@RequestParam("start") Integer start,
+                                          @RequestParam("end")Integer end,@RequestParam("userId") Long userId){
+        System.out.println("tname == " + tname);
+        return socialService.searchHotDynamic(tname,start,end,userId);
     }
 
 
@@ -74,6 +77,7 @@ public class DynamicController {
      */
     @GetMapping("/dynamic/likeDynamic")
     public ZheXingResult likeDynamic(Long userId,Long dynamicId,String tnames,boolean flag){
+        System.out.println("likeDynamic " + userId + " " + dynamicId + " " + tnames + " " + flag);
         return socialService.likeDynamic(userId, dynamicId, tnames, flag);
     }
 

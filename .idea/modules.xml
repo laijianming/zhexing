@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/zhexing-common-api/zhexing-common-api.iml" filepath="$PROJECT_DIR$/zhexing-common-api/zhexing-common-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-config/zhexing-config.iml" filepath="$PROJECT_DIR$/zhexing-config/zhexing-config.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-dashboard/zhexing-dashboard.iml" filepath="$PROJECT_DIR$/zhexing-dashboard/zhexing-dashboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-eureka01/zhexing-eureka01.iml" filepath="$PROJECT_DIR$/zhexing-eureka01/zhexing-eureka01.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-eureka02/zhexing-eureka02.iml" filepath="$PROJECT_DIR$/zhexing-eureka02/zhexing-eureka02.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-manage/zhexing-manage.iml" filepath="$PROJECT_DIR$/zhexing-manage/zhexing-manage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-parent.iml" filepath="$PROJECT_DIR$/zhexing-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-search/zhexing-search.iml" filepath="$PROJECT_DIR$/zhexing-search/zhexing-search.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-social/zhexing-social.iml" filepath="$PROJECT_DIR$/zhexing-social/zhexing-social.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-sso/zhexing-sso.iml" filepath="$PROJECT_DIR$/zhexing-sso/zhexing-sso.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-zipkin/zhexing-zipkin.iml" filepath="$PROJECT_DIR$/zhexing-zipkin/zhexing-zipkin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zhexing-zuul/zhexing-zuul.iml" filepath="$PROJECT_DIR$/zhexing-zuul/zhexing-zuul.iml" />
+    </modules>
+  </component>
+</project>

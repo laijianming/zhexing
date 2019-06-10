@@ -9,8 +9,6 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -53,8 +51,10 @@ public class UserControll {
 	public void Activate(@PathVariable("token")String token,HttpServletRequest request,HttpServletResponse response) throws Exception, IOException{
 		ZheXingResult result= userseriver.activateUserByToken(token);
 		System.out.println("激活:"+token);
-		request.getServletContext().getRequestDispatcher("/success.html").forward(request, response);
+//		request.getServletContext().getRequestDispatcher("/success.html").forward(request, response);
+		response.sendRedirect("/success.html");
 	}
+
 	 @RequestMapping("/code")
 	    @ResponseBody
 	    public ZheXingResult getCode(HttpServletRequest request,HttpServletResponse response,HttpSession session){

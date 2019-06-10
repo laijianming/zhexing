@@ -1,0 +1,62 @@
+server:
+  port: 88
+spring:
+  application:
+    name: zhexing-zuul
+  zipkin:
+    enabled: true
+    base-url: http://localhost:9411/
+    locator:
+      discovery:
+        enabled: true
+    sender:
+      type: WEB
+  sleuth:
+    web:
+      client:
+        enabled: true
+    sampler:
+        # 默认的采样比率为0.1，不能看到所有请求数据
+        # 更改采样比率为1，就能看到所有的请求数据了，但是这样会增加接口调用延迟
+      probability: 1.0
+#  main:
+#    allow-bean-definition-overriding: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8001/eureka/,http://localhost:8002/eureka/
+  instance:
+    instance-id: zhexing-zuul
+    prefer-ip-address: true
+#    instance-id: zhexing-zuul-${random.int}  # 生产环境下使用
+
+
+
+feign:
+  hystrix:
+    enabled: true
+  httpclient:
+    enabled: true
+
+#hystrix的超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 19000
+#ribbon的超时时间
+ribbon:
+  ReadTimeout: 30000
+  ConnectTimeout: 30000
+zuul:
+#management:
+#  metrics:
+#    web:
+#      server:
+#        auto-time-requests: true
+  #ignored-services: microservicecloud-dept  #忽略这个名称的访问

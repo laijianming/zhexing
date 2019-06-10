@@ -57,7 +57,7 @@ public class SsoFallback implements FallbackFactory<SsoService> {
             }
 
             @Override
-            public ZheXingResult checkData(String value, String type) throws Exception {
+            public ZheXingResult checkData(String value,String type) throws Exception {
                 return result;
             }
 
@@ -67,7 +67,7 @@ public class SsoFallback implements FallbackFactory<SsoService> {
             }
 
             @Override
-            public ZheXingResult updateUserMessage(String uname, String uemail, String unickname, String newuname, String uphone, String token) {
+            public ZheXingResult updateUserMessage(String uname, String uemail, String unickname, String newname, String uphone) {
                 return result;
             }
 

@@ -1,0 +1,19 @@
+server:
+  port: 3333
+
+spring:
+  application:
+    name:  zhexing-config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/laijianming/zhexing-config.git
+          search-paths:
+            - zhexing-dashboard/
+            - zhexing-eureka01/
+            - zhexing-eureka02/
+            - zhexing-social01/
+            - zhexing-sso/
+            - zhexing-dashboard/
+        bootstrap: true

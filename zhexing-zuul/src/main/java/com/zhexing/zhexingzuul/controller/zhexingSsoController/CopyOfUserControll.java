@@ -19,7 +19,7 @@ public class CopyOfUserControll {
 	@RequestMapping("/check/{value}/{type}") //数据校验接口,具有回调功能
 	@ResponseBody
 	public ZheXingResult checkData(@PathVariable("value")String value, @PathVariable("type") String type) throws Exception{
-		ZheXingResult result=userseriver.checkData(value, type);
+		ZheXingResult result=userseriver.checkData(value,type);
 	return result;
 	}
 	
